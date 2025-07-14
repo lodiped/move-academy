@@ -53,40 +53,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-col gap-2 rounded-lg border p-5">
-				<h2 class="pb-3">Cumbuca Atual</h2>
-				<Cumbucas />
-				<div class="flex w-full justify-center">
-					<div class="flex min-h-70 w-45 items-center justify-center rounded bg-rose-700">
-						<span class="-rotate-45">Capa</span>
-					</div>
-				</div>
-				<div class="flex flex-col items-center justify-center">
-					<p class="text-center text-2xl font-bold">Nome do Livro</p>
-					<p class="text-base opacity-50">Autor Sobrenome, 2000</p>
-				</div>
-
-				<div>
-					<p>Cronograma</p>
-					<ul class="flex w-full flex-col items-center justify-center">
-						<li class="flex w-full max-w-[30ch] justify-between">
-							<span>Cap. 1</span>&bull;<span>15 págs</span>&bull;<span>01/02</span>
-						</li>
-						<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-							<span>Cap. 2</span>&bull;<span>20 págs</span>&bull;<span>10/02</span>
-						</li>
-						<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-							<span>Cap. 3</span>&bull;<span>23 págs</span>&bull;<span>20/02</span>
-						</li>
-						<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-							<span>Cap. 4 & 5</span>&bull;<span>18 págs</span>&bull;<span>28/02</span>
-						</li>
-						<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-							<span>Cap. 6</span>&bull;<span>12 págs</span>&bull;<span>10/03</span>
-						</li>
-					</ul>
-				</div>
-			</div>
+			<Cumbucas />
 			<div class="flex flex-col gap-2 rounded-lg border p-5">
 				<h2 class="pb-3">Cumbucas Passadas</h2>
 				<div class="grid w-full grid-cols-2 gap-2">
