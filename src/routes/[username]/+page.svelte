@@ -54,51 +54,6 @@
 				</div>
 			</div>
 			<Cumbucas />
-			<div class="flex flex-col gap-2 rounded-lg border p-5">
-				<h2 class="pb-3">Cumbucas Passadas</h2>
-				<div class="grid w-full grid-cols-2 gap-2">
-					<!-- for loop -->
-					<div class="flex flex-col items-center">
-						<div
-							class="flex min-h-[200px] w-[130px] items-center justify-center rounded bg-green-400"
-						>
-							Capa
-						</div>
-						<p class="text-xl font-bold">Um Título do Livro</p>
-						<p class="text-sm opacity-50">Autor Sobrenome, 2000</p>
-					</div>
-					<div class="flex flex-col items-center">
-						<div
-							class="flex min-h-[200px] w-[130px] items-center justify-center rounded bg-rose-600"
-						>
-							Capa
-						</div>
-						<p class="text-xl font-bold">Título</p>
-						<p class="text-sm opacity-50">Autor Sobrenome, 2000</p>
-					</div>
-					<div class="flex flex-col items-center">
-						<div
-							class="flex min-h-[200px] w-[130px] items-center justify-center rounded bg-blue-400"
-						>
-							Capa
-						</div>
-						<p class="text-xl font-bold">Nome do Livro</p>
-						<p class="text-sm opacity-50">Autor Sobrenome, 2000</p>
-					</div>
-					<div class="flex flex-col items-center">
-						<div
-							class="flex min-h-[200px] w-[130px] items-center justify-center rounded bg-amber-400"
-						>
-							Capa
-						</div>
-						<p class="text-xl font-bold">Livro Tal</p>
-						<p class="text-sm opacity-50">Autor Sobrenome, 2000</p>
-					</div>
-				</div>
-				<div class="flex w-full justify-center pt-5 pb-2 text-2xl">
-					<Dots class="cursor-pointer" />
-				</div>
-			</div>
 		</div>
 		<div class="flex w-full max-w-[80ch] flex-col gap-2 lg:pr-2">
 			<div class="flex w-full flex-col gap-5 rounded-xl border p-3 pb-6">
@@ -143,7 +98,10 @@
 						</div>
 					</button>
 					{#if trilhaTest}
-						<div transition:slide={{ duration: 200 }} class="flex w-full flex-col gap-2 px-3 pt-2">
+						<div
+							transition:slide={{ duration: 200 }}
+							class="mx-3 flex w-auto flex-col gap-3 rounded-b-lg bg-stone-900 p-3 px-5"
+						>
 							<div class="flex items-center justify-between gap-2 opacity-50">
 								<div class="flex w-full items-center gap-2">
 									<Check class="text-green-500" />
@@ -288,8 +246,6 @@
 					<div class="flex w-full justify-between gap-2">
 						<span class="text-xl font-bold">Curso Contábil Tal</span>
 						<div class="flex gap-5 opacity-50">
-							<span>10 Vídeos</span>
-							&bull;
 							<span>4 horas</span>
 						</div>
 					</div>

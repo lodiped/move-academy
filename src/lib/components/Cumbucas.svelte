@@ -4,10 +4,19 @@
 
 	// @ts-ignore
 	import Dots from 'virtual:icons/mdi/dots-horizontal';
+	// @ts-ignore
+	import Info from 'virtual:icons/mdi/information-outline';
+	// @ts-ignore
+	import Pdf from 'virtual:icons/mdi/file-pdf-box';
+	// @ts-ignore
+	import Chevron from 'virtual:icons/mdi/chevron-down';
 
 	let booksArray: any = $state([]);
 	let booksShow: any = $state([]);
+	let booksReversed: any = $state([]);
 	let currentBook: any = $state({});
+	let bookModal: any = $state({});
+	let oldBooks = $state(false);
 
 	$effect(() => {
 		untrack(async () => {
@@ -37,19 +46,35 @@
 			}
 			const idx = currentCumbuca;
 			currentBook = booksArray[idx];
-			booksShow = booksArray.reverse();
+			booksReversed = [...booksArray].reverse();
+			booksShow = booksReversed.slice(0, 4);
 		} catch (error) {
 			console.error('getBooks failed:', error);
 			throw error;
 		}
+	}
+
+	function loadMore() {
+		const nextBatch = booksReversed.slice(booksShow.length, booksShow.length + 4);
+		booksShow = [...booksShow, ...nextBatch];
 	}
 </script>
 
 <div class="flex flex-col gap-2 rounded-lg border p-5">
 	<h2 class="pb-3">Cumbuca Atual</h2>
 	<div class="flex w-full justify-center">
-		<div class="flex min-h-70 w-45 items-center justify-center rounded bg-rose-700">
-			<span class="-rotate-45">Capa</span>
+		<div class="relative flex min-h-70 w-45 items-center justify-center rounded bg-rose-700">
+			<span class="-rotate-45">Capa </span>
+			<div
+				class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
+			>
+				<button class="cursor-pointer transition-all hover:scale-110">
+					<Info />
+				</button>
+				<button class="cursor-pointer transition-all hover:scale-110">
+					<Pdf />
+				</button>
+			</div>
 		</div>
 	</div>
 	<div class="flex flex-col items-center justify-center">
@@ -83,20 +108,58 @@
 	<h2 class="pb-3">Cumbucas Passadas</h2>
 	<div class="grid w-full grid-cols-2 gap-2">
 		<!-- for loop -->
-		{#each booksShow as book}
+		{#each booksShow as book, i}
 			<div class="flex flex-col items-center">
-				<div class="flex min-h-[200px] w-[130px] items-center justify-center rounded bg-green-400">
+				<div
+					class="relative flex min-h-[200px] w-[130px] items-center justify-center rounded bg-green-400"
+				>
 					Capa
+					<div
+						class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
+					>
+						<button
+							onclick={() => {
+								bookModal = book;
+								oldBooks = true;
+							}}
+							class="cursor-pointer transition-all hover:scale-110"
+						>
+							<Info />
+						</button>
+						<button class="cursor-pointer transition-all hover:scale-110">
+							<Pdf />
+						</button>
+					</div>
 				</div>
-				<p class="text-xl font-bold">{book.titulo}</p>
+				<p class="text-center text-xl font-bold">{book.titulo}</p>
 				<p class="text-sm opacity-50">{book.autor}, {book.ano}</p>
 			</div>
 		{/each}
 	</div>
-	<button
-		onclick={() => console.log('do the whole array or something')}
-		class="flex w-full justify-center pt-5 pb-2 text-2xl"
-	>
-		<Dots class="cursor-pointer" />
-	</button>
+
+	{#if booksShow.length < booksArray.length}
+		<button onclick={loadMore} class="flex w-full justify-center pt-5 pb-2 text-2xl">
+			<Chevron class="cursor-pointer" />
+		</button>
+	{:else}
+		<button
+			onclick={() => {
+				booksShow = booksReversed.slice(0, 4);
+			}}
+			class="flex w-full cursor-pointer justify-center pt-5 pb-2 text-2xl"
+		>
+			Fechar
+		</button>
+	{/if}
 </div>
+
+{#if oldBooks}
+	<div
+		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
+	>
+		<div class="rounded-xl bg-white/10 p-5 backdrop-blur">{bookModal.titulo}</div>
+		<button class="bg-accent-500 cursor-pointer rounded-lg p-2" onclick={() => (oldBooks = false)}
+			>Fechar</button
+		>
+	</div>
+{/if}

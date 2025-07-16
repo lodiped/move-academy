@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { getDatabase, ref, get } from './src/lib/firebase.js';
