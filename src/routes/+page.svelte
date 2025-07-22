@@ -8,7 +8,8 @@
 		currentUsername,
 		isLoading,
 		usernamesArray,
-		firstVisit
+		firstVisit,
+		toLogin
 	} from '$lib/state.svelte';
 	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -40,8 +41,6 @@
 			return;
 		}
 	}
-
-	let toLogin = $state(false);
 
 	$effect(() => {
 		untrack(() => {
@@ -79,7 +78,7 @@
 							goto(`/${currentUsername.value}`);
 							return;
 						} else {
-							toLogin = true;
+							toLogin.value = true;
 						}
 					} else {
 						console.error('No data available');

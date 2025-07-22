@@ -2,9 +2,6 @@
 	import { get, ref, getDatabase } from '$lib/firebase';
 	import { untrack } from 'svelte';
 	import { slide } from 'svelte/transition';
-
-	// @ts-ignore
-	import Dots from 'virtual:icons/mdi/dots-horizontal';
 	// @ts-ignore
 	import Info from 'virtual:icons/mdi/information-outline';
 	// @ts-ignore
@@ -67,30 +64,32 @@
 	class=" flex flex-col gap-2 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-3 shadow shadow-black/20 transition-all"
 >
 	<h2 class="cool-title px-3 pb-3">Cumbuca Atual</h2>
-	<div class="flex w-full justify-center">
-		<div
-			class="relative flex min-h-70 w-45 items-center justify-center rounded bg-cover bg-center shadow-[0_3px_10px] shadow-black/50"
-			style={`background-image: url('/cumbuca/${currentBook.link}.jpg');`}
-		>
+	{#if currentBook.link}
+		<div class="flex w-full justify-center">
 			<div
-				class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
+				class="relative flex min-h-70 w-45 items-center justify-center rounded bg-cover bg-center shadow-[0_3px_10px] shadow-black/50"
+				style={`background-image: url('/cumbuca/${currentBook.link}.jpg');`}
 			>
-				<button
-					onclick={() => console.log(currentBook)}
-					class="cursor-pointer transition-all hover:scale-110"
+				<div
+					class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
 				>
-					<Info />
-				</button>
-				<button class="cursor-pointer transition-all hover:scale-110">
-					<Pdf />
-				</button>
+					<button
+						onclick={() => console.log(currentBook)}
+						class="cursor-pointer transition-all hover:scale-110"
+					>
+						<Info />
+					</button>
+					<button class="cursor-pointer transition-all hover:scale-110">
+						<Pdf />
+					</button>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="flex flex-col items-center justify-center">
-		<p class="text-center text-2xl font-bold">{currentBook.titulo}</p>
-		<p class="text-base opacity-50">{currentBook.autor}, {currentBook.ano}</p>
-	</div>
+		<div class="flex flex-col items-center justify-center">
+			<p class="text-center text-2xl font-bold">{currentBook.titulo}</p>
+			<p class="text-base opacity-50">{currentBook.autor}, {currentBook.ano}</p>
+		</div>
+	{/if}
 
 	<div class="flex flex-col">
 		<p class="text-center font-['Grifter'] tracking-wider opacity-85">Cronograma</p>

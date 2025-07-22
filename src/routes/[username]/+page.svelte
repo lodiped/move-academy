@@ -33,13 +33,6 @@
 
 	let trilhaTest = $state(false);
 
-	// log firebase auth email on console
-	// auth.onAuthStateChanged((user) => {
-	// 	if (user) {
-	// 		console.log(user.email);
-	// 	}
-	// });
-
 	$effect(() => {
 		untrack(() => {
 			console.log(`current user: ${auth.currentUser?.email}`);
