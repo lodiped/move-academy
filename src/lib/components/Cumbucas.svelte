@@ -64,9 +64,9 @@
 </script>
 
 <div
-	class=" flex flex-col gap-2 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-5 shadow shadow-black/20 transition-all"
+	class=" flex flex-col gap-2 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-3 shadow shadow-black/20 transition-all"
 >
-	<h2 class="cool-title pb-3">Cumbuca Atual</h2>
+	<h2 class="cool-title px-3 pb-3">Cumbuca Atual</h2>
 	<div class="flex w-full justify-center">
 		<div
 			class="relative flex min-h-70 w-45 items-center justify-center rounded bg-cover bg-center shadow-[0_3px_10px] shadow-black/50"
@@ -126,8 +126,8 @@
 	</div>
 </div>
 
-<div class="glass-bg flex flex-col gap-2 p-5">
-	<h2 class="cool-title pb-3">Livros das Cumbucas</h2>
+<div class="glass-bg flex flex-col gap-2 p-3">
+	<h2 class="cool-title px-3 pb-3">Livros das Cumbucas</h2>
 	<div class="grid w-full grid-cols-2 gap-2">
 		<!-- for loop -->
 		{#each booksShow as book, i}

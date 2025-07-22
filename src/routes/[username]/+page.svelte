@@ -49,10 +49,10 @@
 
 <h1 class="cool-title my-5">Move Academy</h1>
 {#if currentUsername.value === page.params.username}
-	<div class="mb-10 flex w-full flex-col justify-center gap-5 lg:flex-row">
-		<div class="flex w-full max-w-[50ch] flex-col gap-2 lg:pl-2">
+	<div class="mb-10 flex w-full flex-col justify-center gap-4 px-3 lg:flex-row">
+		<div class="flex w-full max-w-[50ch] flex-col gap-4">
 			<div
-				class="flex items-center justify-start gap-4 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-5 shadow shadow-black/20"
+				class="flex items-center justify-start gap-4 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-6 shadow shadow-black/20"
 			>
 				<div
 					class="aspect-square w-20 rounded-full bg-cover bg-center shadow shadow-black/40"
@@ -83,12 +83,12 @@
 			</div>
 			<Cumbucas />
 		</div>
-		<div class="flex w-full max-w-[80ch] flex-col gap-2 lg:pr-2">
-			<div class="glass-bg flex w-full flex-col gap-2 p-4">
-				<div>
-					<h2 class="cool-title -mt-2">Continue Assitindo</h2>
+		<div class="flex w-full max-w-[80ch] flex-col gap-4">
+			<div class="glass-bg flex w-full flex-col gap-2 p-3">
+				<div class="px-3">
+					<h2 class="cool-title">Continue Assitindo</h2>
 				</div>
-				<div class="flex gap-3">
+				<div class="flex gap-3 px-3 pb-3">
 					<div
 						class=" aspect-video min-w-40 rounded-2xl bg-stone-300 transition-all hover:scale-105 hover:rounded-none active:scale-100"
 					></div>
@@ -289,7 +289,17 @@
 					<Dots class="cursor-pointer" />
 				</div>
 			</div>
-			<div class="glass-bg p-5">Banner da Conquer</div>
+			<div class="glass-bg flex flex-col items-center gap-2 bg-[#d6b600] p-5">
+				<p class="w-full text-center font-['Grifter'] font-bold text-black/70">
+					Aproveite os cursos da Conquer
+				</p>
+				<a
+					href="https://escolaconquer.com.br"
+					target="_blank"
+					class="w-fit rounded-lg bg-orange-600 px-4 py-3 font-['Grifter'] text-white/85 shadow-lg"
+					>Clique Aqui</a
+				>
+			</div>
 		</div>
 	</div>
 {/if}

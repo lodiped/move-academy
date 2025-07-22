@@ -51,8 +51,8 @@
 		justify-content: center;
 		align-items: center;
 		font-family: 'Alegreya', serif;
-		background-color: #006685;
 		color: white;
 		font-size: large;
+		@apply bg-[url('/assets/background3.png')] bg-fixed;
 	}
 }
