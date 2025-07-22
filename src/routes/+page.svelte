@@ -17,12 +17,15 @@
 	import Google from 'virtual:icons/mdi/google';
 
 	async function handleGoogleSignIn() {
+		isLoading.value = true;
 		try {
 			const result = await signInWithPopup(auth, googleProvider);
 			const user = result.user;
 			console.log(user);
+			isLoading.value = false;
 		} catch (error) {
 			console.error(error);
+			isLoading.value = false;
 		}
 	}
 
@@ -38,10 +41,14 @@
 		}
 	}
 
+	let toLogin = $state(false);
+
 	$effect(() => {
 		untrack(() => {
+			if (isLogged.value) goto(`/${currentUsername.value}`);
 			if (!isLogged.value && firstVisit.value) {
 				auth.onAuthStateChanged(async (user) => {
+					isLoading.value = true;
 					if (!user) {
 						isLogged.value = false;
 						isUser.value = false;
@@ -64,15 +71,15 @@
 						console.log(emailsArray.value);
 						for (let i = 0; i < emailsArray.value.length; i++) {
 							if (emailsArray.value[i] === user.email) {
-								isUser.value = true;
-								console.log(`${user.email} is an employee!`);
-								isLoading.value = false;
 								currentUsername.value = usernamesArray.value[i];
-								goto(`/${currentUsername.value}`);
-								return;
-							} else {
-								console.log(`${user.email} is NOT an employee!`);
 							}
+						}
+						if (currentUsername.value) {
+							isLoading.value = false;
+							goto(`/${currentUsername.value}`);
+							return;
+						} else {
+							toLogin = true;
 						}
 					} else {
 						console.error('No data available');
@@ -86,15 +93,12 @@
 </script>
 
 <main class="flex w-full max-w-[90ch] flex-col items-center gap-5">
-	<h1>Move Academy</h1>
-	<p>
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat quo esse sit maxime eius
-		asperiores quam natus provident architecto earum numquam, eos tempora amet porro ratione. Neque
-		quidem porro maiores. Autem illum provident in quod velit recusandae consequuntur itaque unde
-		dolorem voluptatum repudiandae accusamus quae adipisci alias, praesentium libero voluptas.
-	</p>
 	{#if isLoading.value}
-		Loading
+		isLoading
+	{/if}
+	<h1>Move Academy</h1>
+	{#if isLoading.value}
+		Carregando...
 	{:else if !isLogged.value}
 		<button onclick={handleGoogleSignIn} class="button-base">
 			<Google /><span>Entrar</span>

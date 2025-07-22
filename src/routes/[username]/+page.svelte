@@ -1,9 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { auth } from '$lib/firebase';
-	import { currentUsername, namesConvert } from '$lib/state.svelte';
+	import { signOut } from 'firebase/auth';
+	import { currentUsername, namesConvert, isLogged, isUser } from '$lib/state.svelte';
 	import { untrack } from 'svelte';
 
+	async function handleGoogleSignOut() {
+		try {
+			await signOut(auth);
+			isLogged.value = false;
+			isUser.value = false;
+			goto('/');
+		} catch (error) {
+			console.error(error);
+		}
+	}
 	// @ts-ignore
 	import Dots from 'virtual:icons/mdi/dots-horizontal';
 	// @ts-ignore
@@ -14,8 +25,11 @@
 	import Play from 'virtual:icons/mdi/play';
 	// @ts-ignore
 	import Lock from 'virtual:icons/mdi/lock';
+	// @ts-ignore
+	import Signout from 'virtual:icons/mdi/sign-out';
 	import { slide } from 'svelte/transition';
 	import Cumbucas from '$lib/components/Cumbucas.svelte';
+	import { goto } from '$app/navigation';
 
 	let trilhaTest = $state(false);
 
@@ -33,51 +47,61 @@
 	});
 </script>
 
-<h1 class="my-5">Move Academy</h1>
-<div class="my-2 flex w-full justify-center uppercase">
-	<div class="flex w-full max-w-[130ch] justify-start gap-1 px-2 *:text-sm">
-		<a href="/" class="opacity-50 hover:opacity-100">home</a>
-		<span class="opacity-50">&gt;</span>
-		<span>{namesConvert[page.params.username]}</span>
-	</div>
-</div>
+<h1 class="cool-title my-5">Move Academy</h1>
 {#if currentUsername.value === page.params.username}
 	<div class="mb-10 flex w-full flex-col justify-center gap-5 lg:flex-row">
 		<div class="flex w-full max-w-[50ch] flex-col gap-2 lg:pl-2">
-			<div class="flex items-center justify-start gap-4 rounded-lg border p-5">
+			<div
+				class="flex items-center justify-start gap-4 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-5 shadow shadow-black/20"
+			>
 				<div class="aspect-square w-20 rounded-full bg-stone-700"></div>
 				<div class="flex w-full flex-col gap-2">
-					<h3>{namesConvert[page.params.username]}</h3>
-					<div class="min-h-3 w-full rounded-full bg-stone-700">
-						<div class="bg-accent-500 min-h-3 w-2/3 rounded-full"></div>
+					<div class="flex items-center justify-between gap-3">
+						<h3 class="cool-title">{namesConvert[page.params.username]}</h3>
+						<button
+							onclick={handleGoogleSignOut}
+							class="flex cursor-pointer items-center justify-center gap-1 text-sm opacity-50 transition-opacity hover:opacity-100"
+						>
+							<span class="font-['Grifter'] tracking-wider">Sair</span>
+							<Signout />
+						</button>
+					</div>
+					<div class="h-3 min-h-3 w-full rounded-full bg-stone-800/50 shadow">
+						<div
+							class=" from-accent-500 min-h-3 w-2/3 rounded-full bg-linear-to-t to-[#66ccff] shadow"
+						></div>
 					</div>
 				</div>
 			</div>
 			<Cumbucas />
 		</div>
 		<div class="flex w-full max-w-[80ch] flex-col gap-2 lg:pr-2">
-			<div class="flex w-full flex-col gap-5 rounded-xl border p-3 pb-6">
-				<h2 class="-mb-3 px-3">Cursos matriculados</h2>
-				<div class="flex w-full flex-col gap-2 rounded-lg bg-white p-4 text-black">
-					<div>
-						<h3 class="-mt-2">Continue Assitindo</h3>
-					</div>
-					<div class="flex gap-3">
-						<div
-							class=" aspect-video min-w-40 rounded-2xl bg-stone-300 transition-all hover:scale-105 hover:rounded-none active:scale-100"
-						></div>
-						<div class="flex w-full flex-col">
-							<p class="text-accent-500 text-3xl font-bold tracking-wide">Título do vídeo</p>
-							<div class="flex items-center gap-3">
-								<div class="h-3 min-h-3 w-full rounded-full bg-stone-300">
-									<div class="bg-accent-500 min-h-3 w-2/3 rounded-full"></div>
-								</div>
-								<span class="text-xl">65%</span>
+			<div class="glass-bg flex w-full flex-col gap-2 p-4">
+				<div>
+					<h2 class="cool-title -mt-2">Continue Assitindo</h2>
+				</div>
+				<div class="flex gap-3">
+					<div
+						class=" aspect-video min-w-40 rounded-2xl bg-stone-300 transition-all hover:scale-105 hover:rounded-none active:scale-100"
+					></div>
+					<div class="flex w-full flex-col">
+						<p class="font-['Grifter'] text-2xl font-bold tracking-wide text-white/85">
+							Título do vídeo
+						</p>
+						<div class="flex items-center gap-3">
+							<div class="h-3 min-h-3 w-full rounded-full bg-stone-800/50 shadow">
+								<div
+									class=" from-accent-500 min-h-3 w-2/3 rounded-full bg-linear-to-t to-[#66ccff] shadow"
+								></div>
 							</div>
-							<p>Trilha: BPO Financeiro - Modulo X</p>
+							<span class="text-xl">65%</span>
 						</div>
+						<p class="font-['Grifter'] text-white/85">Trilha: BPO Financeiro - Modulo X</p>
 					</div>
 				</div>
+			</div>
+			<div class="glass-bg flex w-full flex-col gap-5 p-3 pb-6">
+				<h2 class="cool-title -mb-3 px-3">Cursos matriculados</h2>
 
 				<div class="flex w-full flex-col px-3 transition-all">
 					<button
@@ -175,8 +199,8 @@
 					</div>
 				</button>
 			</div>
-			<div class="flex w-full flex-col gap-5 rounded-xl border p-3">
-				<h2 class="-mb-3 px-3">Cursos Disponíveis</h2>
+			<div class="glass-bg flex w-full flex-col gap-5 p-3">
+				<h2 class="cool-title -mb-3 px-3">Cursos Disponíveis</h2>
 				<button
 					class="group mx-3 flex cursor-pointer justify-between gap-4 rounded-lg bg-stone-800 p-4"
 				>
@@ -257,7 +281,7 @@
 					<Dots class="cursor-pointer" />
 				</div>
 			</div>
-			<div class="rounded-lg border p-5">Banner da Conquer</div>
+			<div class="glass-bg p-5">Banner da Conquer</div>
 		</div>
 	</div>
 {/if}

@@ -60,10 +60,14 @@
 	}
 </script>
 
-<div class="flex flex-col gap-2 rounded-lg border p-5">
-	<h2 class="pb-3">Cumbuca Atual</h2>
+<div
+	class=" flex flex-col gap-2 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-5 shadow shadow-black/20 transition-all"
+>
+	<h2 class="cool-title pb-3">Cumbuca Atual</h2>
 	<div class="flex w-full justify-center">
-		<div class="relative flex min-h-70 w-45 items-center justify-center rounded bg-rose-700">
+		<div
+			class="relative flex min-h-70 w-45 items-center justify-center rounded bg-rose-700 shadow-[0_3px_10px] shadow-black/50"
+		>
 			<span class="-rotate-45">Capa </span>
 			<div
 				class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
@@ -104,8 +108,8 @@
 	</div>
 </div>
 
-<div class="flex flex-col gap-2 rounded-lg border p-5">
-	<h2 class="pb-3">Cumbucas Passadas</h2>
+<div class="glass-bg flex flex-col gap-2 p-5">
+	<h2 class="cool-title pb-3">Cumbucas Passadas</h2>
 	<div class="grid w-full grid-cols-2 gap-2">
 		<!-- for loop -->
 		{#each booksShow as book, i}
