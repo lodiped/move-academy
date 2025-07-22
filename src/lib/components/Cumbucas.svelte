@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { get, ref, getDatabase } from '$lib/firebase';
 	import { untrack } from 'svelte';
+	import { slide } from 'svelte/transition';
 
 	// @ts-ignore
 	import Dots from 'virtual:icons/mdi/dots-horizontal';
@@ -10,6 +11,8 @@
 	import Pdf from 'virtual:icons/mdi/file-pdf-box';
 	// @ts-ignore
 	import Chevron from 'virtual:icons/mdi/chevron-down';
+
+	let showCronograma = $state(false);
 
 	let booksArray: any = $state([]);
 	let booksShow: any = $state([]);
@@ -66,13 +69,16 @@
 	<h2 class="cool-title pb-3">Cumbuca Atual</h2>
 	<div class="flex w-full justify-center">
 		<div
-			class="relative flex min-h-70 w-45 items-center justify-center rounded bg-rose-700 shadow-[0_3px_10px] shadow-black/50"
+			class="relative flex min-h-70 w-45 items-center justify-center rounded bg-cover bg-center shadow-[0_3px_10px] shadow-black/50"
+			style={`background-image: url('/cumbuca/${currentBook.link}.jpg');`}
 		>
-			<span class="-rotate-45">Capa </span>
 			<div
 				class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
 			>
-				<button class="cursor-pointer transition-all hover:scale-110">
+				<button
+					onclick={() => console.log(currentBook)}
+					class="cursor-pointer transition-all hover:scale-110"
+				>
 					<Info />
 				</button>
 				<button class="cursor-pointer transition-all hover:scale-110">
@@ -86,40 +92,52 @@
 		<p class="text-base opacity-50">{currentBook.autor}, {currentBook.ano}</p>
 	</div>
 
-	<div>
-		<p>Cronograma</p>
-		<ul class="flex w-full flex-col items-center justify-center">
-			<li class="flex w-full max-w-[30ch] justify-between">
-				<span>Cap. 1</span>&bull;<span>15 págs</span>&bull;<span>01/02</span>
-			</li>
-			<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-				<span>Cap. 2</span>&bull;<span>20 págs</span>&bull;<span>10/02</span>
-			</li>
-			<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-				<span>Cap. 3</span>&bull;<span>23 págs</span>&bull;<span>20/02</span>
-			</li>
-			<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-				<span>Cap. 4 & 5</span>&bull;<span>18 págs</span>&bull;<span>28/02</span>
-			</li>
-			<li class="flex w-full max-w-[30ch] justify-between opacity-50">
-				<span>Cap. 6</span>&bull;<span>12 págs</span>&bull;<span>10/03</span>
-			</li>
-		</ul>
+	<div class="flex flex-col">
+		<p class="text-center font-['Grifter'] tracking-wider opacity-85">Cronograma</p>
+		{#if showCronograma}
+			<div transition:slide={{ duration: 200 }}>
+				<ul class="flex w-full flex-col items-center justify-center">
+					<li class="flex w-full max-w-[30ch] justify-between">
+						<span>Cap. 1</span>&bull;<span>15 págs</span>&bull;<span>01/02</span>
+					</li>
+					<li class="flex w-full max-w-[30ch] justify-between opacity-50">
+						<span>Cap. 2</span>&bull;<span>20 págs</span>&bull;<span>10/02</span>
+					</li>
+					<li class="flex w-full max-w-[30ch] justify-between opacity-50">
+						<span>Cap. 3</span>&bull;<span>23 págs</span>&bull;<span>20/02</span>
+					</li>
+					<li class="flex w-full max-w-[30ch] justify-between opacity-50">
+						<span>Cap. 4 & 5</span>&bull;<span>18 págs</span>&bull;<span>28/02</span>
+					</li>
+					<li class="flex w-full max-w-[30ch] justify-between opacity-50">
+						<span>Cap. 6</span>&bull;<span>12 págs</span>&bull;<span>10/03</span>
+					</li>
+				</ul>
+			</div>
+		{/if}
+		<div class="flex w-full items-center justify-center">
+			<button
+				onclick={() => (showCronograma = !showCronograma)}
+				class="cursor-pointer text-2xl transition-all delay-150 duration-500 {showCronograma
+					? 'rotate-180'
+					: ''}"><Chevron /></button
+			>
+		</div>
 	</div>
 </div>
 
 <div class="glass-bg flex flex-col gap-2 p-5">
-	<h2 class="cool-title pb-3">Cumbucas Passadas</h2>
+	<h2 class="cool-title pb-3">Livros das Cumbucas</h2>
 	<div class="grid w-full grid-cols-2 gap-2">
 		<!-- for loop -->
 		{#each booksShow as book, i}
 			<div class="flex flex-col items-center">
 				<div
-					class="relative flex min-h-[200px] w-[130px] items-center justify-center rounded bg-green-400"
+					class="relative flex min-h-[200px] w-[130px] items-center justify-center rounded-xl bg-cover bg-center shadow-md shadow-black/20"
+					style={`background-image: url('/cumbuca/${book.link}.jpg');`}
 				>
-					Capa
 					<div
-						class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
+						class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded-xl bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
 					>
 						<button
 							onclick={() => {
