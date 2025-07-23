@@ -9,7 +9,8 @@
 		isLoading,
 		usernamesArray,
 		firstVisit,
-		toLogin
+		toLogin,
+		authStuff
 	} from '$lib/state.svelte';
 	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -43,50 +44,9 @@
 	}
 
 	$effect(() => {
-		untrack(() => {
+		untrack(async () => {
 			if (isLogged.value) goto(`/${currentUsername.value}`);
-			if (!isLogged.value && firstVisit.value) {
-				auth.onAuthStateChanged(async (user) => {
-					isLoading.value = true;
-					if (!user) {
-						isLogged.value = false;
-						isUser.value = false;
-						isLoading.value = false;
-						console.log('not logged in');
-						return;
-					}
-
-					const snapshot = await get(child(ref(getDatabase()), '/emails'));
-					const employeeData = snapshot.exists() ? snapshot.val() : null;
-					isLogged.value = true;
-					if (employeeData) {
-						isUser.value = true;
-						emailsArray.value = Object.entries(employeeData).map(([username, email]) => {
-							return email;
-						});
-						usernamesArray.value = Object.entries(employeeData).map(([username, email]) => {
-							return username;
-						});
-						console.log(emailsArray.value);
-						for (let i = 0; i < emailsArray.value.length; i++) {
-							if (emailsArray.value[i] === user.email) {
-								currentUsername.value = usernamesArray.value[i];
-							}
-						}
-						if (currentUsername.value) {
-							isLoading.value = false;
-							goto(`/${currentUsername.value}`);
-							return;
-						} else {
-							toLogin.value = true;
-						}
-					} else {
-						console.error('No data available');
-						isLoading.value = false;
-						return;
-					}
-				});
-			}
+			await authStuff();
 		});
 	});
 </script>

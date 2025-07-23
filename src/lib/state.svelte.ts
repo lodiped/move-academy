@@ -12,51 +12,68 @@ export const toLogin = $state({ value: false });
 
 export const currentUsername = $state({ value: '' });
 
-if (!isLogged.value) {
-	auth.onAuthStateChanged(async (user) => {
-		firstVisit.value = false;
-		isLoading.value = true;
-		if (!user) {
-			isLogged.value = false;
-			isUser.value = false;
-			isLoading.value = false;
-			console.log('not logged in');
-			return;
-		}
-
-		const snapshot = await get(child(ref(getDatabase()), '/emails'));
-		const employeeData = snapshot.exists() ? snapshot.val() : null;
-		isLogged.value = true;
-		if (employeeData) {
-			isUser.value = true;
-			emailsArray.value = Object.entries(employeeData).map(([username, email]) => {
-				return email;
-			});
-			usernamesArray.value = Object.entries(employeeData).map(([username, email]) => {
-				return username;
-			});
-			console.log(emailsArray.value);
-			for (let i = 0; i < emailsArray.value.length; i++) {
-				if (emailsArray.value[i] === user.email) {
-					currentUsername.value = usernamesArray.value[i];
-				}
-			}
-			if (currentUsername.value) {
+export const authStuff = async () => {
+	if (!isLogged.value) {
+		auth.onAuthStateChanged(async (user) => {
+			firstVisit.value = false;
+			isLoading.value = true;
+			if (!user) {
+				isLogged.value = false;
+				isUser.value = false;
 				isLoading.value = false;
-				goto(`/${currentUsername.value}`);
+				console.log('not logged in');
 				return;
-			} else {
-				toLogin.value = true;
 			}
-		} else {
-			console.error('No data available');
-			isLoading.value = false;
-			return;
-		}
-	});
-} else {
-	goto(`/${currentUsername.value}`);
-}
+
+			const uid = user.uid;
+			console.log(uid);
+			try {
+				const adminSnap = await get(child(ref(getDatabase()), `/admin/${uid}`));
+				const snapshot = await get(child(ref(getDatabase()), '/emails'));
+				const userData = snapshot.exists() ? snapshot.val() : null;
+				isLogged.value = true;
+				if (userData) {
+					if (adminSnap.exists()) {
+						isAdmin.value = true;
+						console.log('IS ADMIN');
+						goto('/admin');
+						return;
+					} else {
+						isAdmin.value = false;
+						isUser.value = true;
+					}
+					emailsArray.value = Object.entries(userData).map(([username, email]) => {
+						return email;
+					});
+					usernamesArray.value = Object.entries(userData).map(([username, email]) => {
+						return username;
+					});
+					console.log(emailsArray.value);
+					for (let i = 0; i < emailsArray.value.length; i++) {
+						if (emailsArray.value[i] === user.email) {
+							currentUsername.value = usernamesArray.value[i];
+						}
+					}
+					if (currentUsername.value) {
+						isLoading.value = false;
+						goto(`/${currentUsername.value}`);
+						return;
+					} else {
+						toLogin.value = true;
+					}
+				} else {
+					console.error('No data available');
+					isLoading.value = false;
+					return;
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		});
+	} else {
+		goto(`/${currentUsername.value}`);
+	}
+};
 
 export const namesConvert: any = $state({
 	amandacastro: 'Amanda Castro',
@@ -65,6 +82,29 @@ export const namesConvert: any = $state({
 	asaphtavares: 'Asaph Tavares',
 	carolbarros: 'Caroline Barros',
 	cassiarodrigues: 'Cassia Rodrigues',
+	eduardoditrich: 'Eduardo Ditrich',
+	eliseucararo: 'Eliseu Cararo',
+	ewertondubiela: 'Ewerton Dubiela',
+	fernandafrandoloso: 'Fernanda Frandoloso',
+	fernandogranciano: 'Fernando Granciano',
+	francielyoliveira: 'Franciely Oliveira',
+	heloisasilva: 'Heloisa Silva',
+	jessicanunes: 'Jessica Nunes',
+	kamilaendo: 'Kamila Endo',
+	ketelinnascimento: 'Ketelin Nascimento',
+	larissamartins: 'Larissa Martins',
+	leonardosilva: 'Leonardo Silva',
+	leticiaguidolin: 'Leticia Guidolin',
+	lincolngomes: 'Lincoln Gomes',
+	lucaseyng: 'Lucas Eyng',
+	luizfaquim: 'Luiz Faquim',
+	maluwienen: 'Malu Wienen',
+	michaelhening: 'Michael Hening',
 	pedrolodi: 'Pedro Lodi',
-	thiagorosa: 'Thiago Rosa'
+	rafaelwolski: 'Rafael Wolski',
+	robersoncorrea: 'Roberson Correa',
+	tamirisrosa: 'Tamiris Rosa',
+	thiagolopes: 'Thiago Lopes',
+	thiagorosa: 'Thiago Rosa',
+	valdineisilva: 'Valdinei Silva'
 });
