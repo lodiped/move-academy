@@ -8,7 +8,6 @@ export const firstVisit = $state({ value: true });
 
 export const usernamesArray: any = $state({ value: [] });
 export const emailsArray: any = $state({ value: [] });
-export const toLogin = $state({ value: false });
 
 export const currentUsername = $state({ value: '' });
 
@@ -21,6 +20,7 @@ export const authStuff = async () => {
 				isLogged.value = false;
 				isUser.value = false;
 				isLoading.value = false;
+				isAdmin.value = false;
 				console.log('not logged in');
 				return;
 			}
@@ -35,37 +35,32 @@ export const authStuff = async () => {
 				if (userData) {
 					if (adminSnap.exists()) {
 						isAdmin.value = true;
+						isUser.value = false;
 						console.log('IS ADMIN');
-						goto('/admin');
-						return;
 					} else {
 						isAdmin.value = false;
 						isUser.value = true;
 					}
-					emailsArray.value = Object.entries(userData).map(([username, email]) => {
-						return email;
-					});
-					usernamesArray.value = Object.entries(userData).map(([username, email]) => {
-						return username;
-					});
-					console.log(emailsArray.value);
-					for (let i = 0; i < emailsArray.value.length; i++) {
-						if (emailsArray.value[i] === user.email) {
-							currentUsername.value = usernamesArray.value[i];
+					if (!emailsArray.value) {
+						emailsArray.value = Object.entries(userData).map(([username, email]) => {
+							return email;
+						});
+						usernamesArray.value = Object.entries(userData).map(([username, email]) => {
+							return username;
+						});
+						console.log(emailsArray.value);
+						for (let i = 0; i < emailsArray.value.length; i++) {
+							if (emailsArray.value[i] === user.email) {
+								currentUsername.value = usernamesArray.value[i];
+							}
 						}
-					}
-					if (currentUsername.value) {
-						isLoading.value = false;
-						goto(`/${currentUsername.value}`);
-						return;
-					} else {
-						toLogin.value = true;
 					}
 				} else {
 					console.error('No data available');
 					isLoading.value = false;
 					return;
 				}
+				isLoading.value = false;
 			} catch (error) {
 				console.error(error);
 			}

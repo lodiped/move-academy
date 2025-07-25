@@ -4,15 +4,11 @@
 	import {
 		isUser,
 		isLogged,
-		emailsArray,
 		currentUsername,
 		isLoading,
-		usernamesArray,
-		firstVisit,
-		toLogin,
-		authStuff
+		authStuff,
+		isAdmin
 	} from '$lib/state.svelte';
-	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	// @ts-ignore
@@ -44,10 +40,22 @@
 	}
 
 	$effect(() => {
-		untrack(async () => {
-			if (isLogged.value) goto(`/${currentUsername.value}`);
+		async function routingStuff() {
+			console.log('routingStuff in running');
 			await authStuff();
-		});
+			if (isLogged.value) {
+				if (isUser.value) {
+					goto(`/${currentUsername.value}`);
+					return;
+				}
+				if (isAdmin.value) {
+					goto('/admin');
+					return;
+				}
+				throw new Error("Couldn't route user");
+			}
+		}
+		routingStuff();
 	});
 </script>
 

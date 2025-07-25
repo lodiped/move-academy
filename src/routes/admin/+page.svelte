@@ -8,8 +8,9 @@
 		untrack(() => {
 			console.log(`current user: ${auth.currentUser?.email}`);
 			if (!isAdmin.value) {
-				goto('/');
 				console.log('effect in untrack is HIT to isAdmin === false');
+				goto('/');
+				return;
 			} else {
 				console.log('effect in untrack is HIT to isAdmin === true');
 			}

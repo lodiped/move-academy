@@ -36,6 +36,11 @@
 
 	$effect(() => {
 		untrack(() => {
+			if (!isUser.value || !isLogged.value) {
+				console.log('not logged in @movenegocios.com.br account');
+				goto('/');
+				return;
+			}
 			console.log(`current user: ${auth.currentUser?.email}`);
 		});
 	});
