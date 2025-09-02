@@ -28,20 +28,19 @@ export const authStuff = async () => {
 			const uid = user.uid;
 			console.log(uid);
 			try {
-				const adminSnap = await get(child(ref(getDatabase()), `/admin/${uid}`));
-				const snapshot = await get(child(ref(getDatabase()), '/emails'));
-				const userData = snapshot.exists() ? snapshot.val() : null;
-				isLogged.value = true;
-				if (userData) {
-					if (adminSnap.exists()) {
-						isAdmin.value = true;
-						isUser.value = false;
-						console.log('IS ADMIN');
-					} else {
-						isAdmin.value = false;
-						isUser.value = true;
-					}
-					if (!emailsArray.value) {
+				if (emailsArray.value.length === 0 || usernamesArray.value.length === 0) {
+					const adminSnap = await get(child(ref(getDatabase()), `/admin/${uid}`));
+					const snapshot = await get(child(ref(getDatabase()), '/emails'));
+					const userData = snapshot.exists() ? snapshot.val() : null;
+					if (userData) {
+						if (adminSnap.exists()) {
+							isAdmin.value = true;
+							isUser.value = false;
+							console.log('IS ADMIN');
+						} else {
+							isAdmin.value = false;
+							isUser.value = true;
+						}
 						emailsArray.value = Object.entries(userData).map(([username, email]) => {
 							return email;
 						});
@@ -54,12 +53,13 @@ export const authStuff = async () => {
 								currentUsername.value = usernamesArray.value[i];
 							}
 						}
+					} else {
+						console.error('No data available');
+						isLoading.value = false;
+						return;
 					}
-				} else {
-					console.error('No data available');
-					isLoading.value = false;
-					return;
 				}
+				isLogged.value = true;
 				isLoading.value = false;
 			} catch (error) {
 				console.error(error);

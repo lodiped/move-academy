@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get, ref, getDatabase } from '$lib/firebase';
-	import { untrack } from 'svelte';
+	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	// @ts-ignore
 	import Info from 'virtual:icons/mdi/information-outline';
@@ -16,13 +16,34 @@
 	let booksReversed: any = $state([]);
 	let currentBook: any = $state({});
 	let bookModal: any = $state({});
-	let oldBooks = $state(false);
+	let booksInfo = $state(false);
 
-	$effect(() => {
-		untrack(async () => {
-			await getBooks();
-		});
+	// TESTING PAGINATION
+	let currentPage = $state(1);
+	const pageSize = 4;
+	let totalPages = $state(1);
+
+	//let pagedBooks = $derived(booksReversed.slice(currentPage - 1) * pageSize, (currentPage * pageSize)))
+
+	function goToPage(n: number) {
+		if (n < 1 || n > totalPages) {
+			return;
+		} else {
+			currentPage = n;
+		}
+	}
+	function nextPage() {
+		goToPage(currentPage + 1);
+	}
+	function prevPage() {
+		goToPage(currentPage - 1);
+	}
+	// TESTING PAGINATION
+
+	onMount(async () => {
+		await getBooks();
 	});
+
 	async function getBooks() {
 		try {
 			const response = await get(ref(getDatabase(), '/cumbuca'));
@@ -74,7 +95,10 @@
 					class="absolute flex h-full min-h-full w-full items-center justify-center gap-2 rounded bg-black/30 text-2xl opacity-0 transition-all hover:opacity-100"
 				>
 					<button
-						onclick={() => console.log(currentBook)}
+						onclick={() => {
+							bookModal = currentBook;
+							booksInfo = true;
+						}}
 						class="cursor-pointer transition-all hover:scale-110"
 					>
 						<Info />
@@ -141,7 +165,7 @@
 						<button
 							onclick={() => {
 								bookModal = book;
-								oldBooks = true;
+								booksInfo = true;
 							}}
 							class="cursor-pointer transition-all hover:scale-110"
 						>
@@ -174,12 +198,12 @@
 	{/if}
 </div>
 
-{#if oldBooks}
+{#if booksInfo}
 	<div
 		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
 	>
 		<div class="rounded-xl bg-white/10 p-5 backdrop-blur">{bookModal.titulo}</div>
-		<button class="bg-accent-500 cursor-pointer rounded-lg p-2" onclick={() => (oldBooks = false)}
+		<button class="bg-accent-500 cursor-pointer rounded-lg p-2" onclick={() => (booksInfo = false)}
 			>Fechar</button
 		>
 	</div>
