@@ -41,7 +41,7 @@
 				<a
 					href="https://escolaconquer.com.br"
 					target="_blank"
-					class="w-fit rounded-lg bg-orange-600 px-4 py-3 font-['Grifter'] text-white/85 shadow-lg"
+					class="w-fit rounded-lg bg-orange-600 px-4 py-3 font-['Grifter'] text-white/85 shadow-lg transition-transform hover:scale-105"
 					>Clique Aqui</a
 				>
 			</div>

@@ -85,6 +85,7 @@ export const namesConvert: any = $state({
 	francielyoliveira: 'Franciely Oliveira',
 	heloisasilva: 'Heloisa Silva',
 	jessicanunes: 'Jessica Nunes',
+	joaomariano: 'João Mariano',
 	kamilaendo: 'Kamila Endo',
 	ketelinnascimento: 'Ketelin Nascimento',
 	larissamartins: 'Larissa Martins',
