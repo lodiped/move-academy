@@ -104,3 +104,29 @@ export const namesConvert: any = $state({
 	thiagorosa: 'Thiago Rosa',
 	valdineisilva: 'Valdinei Silva'
 });
+
+export const booksArray: any = $state({ value: [] });
+export const currentCumbucaObject: any = $state({ value: 0 });
+
+export async function getBooks() {
+	try {
+		const response = await get(ref(getDatabase(), '/cumbuca'));
+		if (!response.exists()) {
+			throw new Error("Couldn't get data at /cumbuca");
+		}
+		let snap = response.val();
+		const { livros, currentCumbuca } = snap;
+
+		if (!livros || typeof livros !== 'object') {
+			console.error(livros);
+			throw new Error('livros is not an object');
+		}
+		booksArray.value = Object.entries(livros).map(([key, value]) => {
+			return value;
+		});
+		currentCumbucaObject.value = currentCumbuca;
+	} catch (error) {
+		console.error('getBooks failed:', error);
+		throw error;
+	}
+}

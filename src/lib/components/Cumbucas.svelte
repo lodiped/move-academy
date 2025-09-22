@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { get, ref, getDatabase } from '$lib/firebase';
+	import { getBooks, booksArray, currentCumbucaObject } from '$lib/state.svelte';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	// @ts-ignore
@@ -11,7 +12,6 @@
 
 	let showCronograma = $state(false);
 
-	let booksArray: any = $state([]);
 	let booksShow: any = $state([]);
 	let booksReversed: any = $state([]);
 	let currentBook: any = $state({});
@@ -42,37 +42,21 @@
 
 	onMount(async () => {
 		await getBooks();
+		parseBooks();
 	});
 
-	async function getBooks() {
-		try {
-			const response = await get(ref(getDatabase(), '/cumbuca'));
-			if (!response.exists()) {
-				throw new Error("Couldn't get data at /cumbuca");
-			}
-			let snap = response.val();
-			const { livros, currentCumbuca } = snap;
-
-			if (!livros || typeof livros !== 'object') {
-				console.error(livros);
-				throw new Error('livros is not an object');
-			}
-			booksArray = Object.entries(livros).map(([key, value]) => {
-				return value;
-			});
-
-			if (Number.isInteger(currentCumbuca) === false || currentCumbuca > booksArray.length - 1) {
-				console.error(currentCumbuca);
-				throw new Error('currentCumbuca is not an integer or out of range');
-			}
-			const idx = currentCumbuca;
-			currentBook = booksArray[idx];
-			booksReversed = [...booksArray].reverse();
-			booksShow = booksReversed.slice(0, 4);
-		} catch (error) {
-			console.error('getBooks failed:', error);
-			throw error;
+	function parseBooks() {
+		if (
+			Number.isInteger(currentCumbucaObject.value) === false ||
+			currentCumbucaObject.value > booksArray.value.length - 1
+		) {
+			console.error(currentCumbucaObject.value);
+			throw new Error('currentCumbucaObject.value is not an integer or out of range');
 		}
+		const idx = currentCumbucaObject.value;
+		currentBook = booksArray.value[idx];
+		booksReversed = [...booksArray.value].reverse();
+		booksShow = booksReversed.slice(0, 4);
 	}
 
 	function loadMore() {
@@ -182,7 +166,7 @@
 		{/each}
 	</div>
 
-	{#if booksShow.length < booksArray.length}
+	{#if booksShow.length < booksArray.value.length}
 		<button onclick={loadMore} class="flex w-full justify-center pt-5 pb-2 text-2xl">
 			<Chevron class="cursor-pointer" />
 		</button>

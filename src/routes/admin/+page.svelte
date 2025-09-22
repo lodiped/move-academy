@@ -16,19 +16,41 @@
 	import { slide } from 'svelte/transition';
 
 	let treinamentos: any = $state([]);
-	let exhibition: string = $state('list');
+	let treinamentosOrdered: any = $state('');
+	let treinamentosOrder = $state('');
+	let exhibition = $state('list');
 
 	let showTreinamentos = $state(false);
+	let showTrilhas = $state(false);
+	let showUsers = $state(false);
+	let showCumbuca = $state(false);
 
+	let addVideo = $state(false);
+	let addVideoLink = $state('');
+	let addVideoTitle = $state('');
+	let addVideoAuthor = $state('');
+
+	function handleVideoOrder(order: string) {
+		if (order === 'newest') {
+			treinamentosOrdered = treinamentos.toReversed();
+			treinamentosOrder = 'newest';
+		}
+		if (order === 'oldest') {
+			treinamentosOrdered = treinamentos;
+			treinamentosOrder = 'oldest';
+		}
+	}
 	onMount(() => {
 		const layout = localStorage.getItem('exhibition');
-		exhibition = layout ? layout : 'list';
+		exhibition = layout ? layout : 'grid';
 		if (isAdmin && !treinamentos.length) {
 			get(child(ref(database), 'treinamentos'))
 				.then((snapshot) => {
 					if (snapshot.exists()) {
 						console.log(snapshot.val());
 						treinamentos = snapshot.val();
+						treinamentosOrdered = treinamentos;
+						treinamentosOrder = 'oldest';
 					} else {
 						console.log('No data available');
 					}
@@ -66,29 +88,57 @@
 				</div>
 			</button>
 			{#if showTreinamentos}
-				<button class="button-base"><span>Adicionar Video</span><span><Add /></span></button>
-				<div class="flex w-full items-center gap-2">
-					<span>Exibição:</span>
-					<button
-						onclick={() => {
-							exhibition = 'list';
-							localStorage.setItem('exhibition', 'list');
-						}}
-						class="trasition-opacity cursor-pointer {exhibition === 'list'
-							? 'drop-shadow-[0_0_3px_white]'
-							: 'opacity-50 hover:opacity-100'}"><List /></button
-					>
-					<button
-						onclick={() => {
-							exhibition = 'grid';
-							localStorage.setItem('exhibition', 'grid');
-						}}
-						class="cursor-pointer transition-opacity {exhibition === 'grid'
-							? 'drop-shadow-[0_0_3px_white]'
-							: 'opacity-50 hover:opacity-100'}"><Square /></button
-					>
-				</div>
-				<div transition:slide>
+				<div transition:slide class="flex w-full flex-col gap-2">
+					<div class="flex w-full justify-center">
+						<button
+							onclick={() => {
+								addVideo = true;
+							}}
+							class="button-base"><span>Adicionar Video</span><span><Add /></span></button
+						>
+					</div>
+					<div class="flex w-full justify-between">
+						<div class="flex w-full items-center gap-2">
+							<span>Exibição:</span>
+							<button
+								onclick={() => {
+									exhibition = 'list';
+									localStorage.setItem('exhibition', 'list');
+								}}
+								class="cursor-pointer transition-opacity {exhibition === 'list'
+									? 'opacity-100 drop-shadow-[0_0_3px_white]'
+									: 'opacity-50 hover:opacity-100'}"><List /></button
+							>
+							<button
+								onclick={() => {
+									exhibition = 'grid';
+									localStorage.setItem('exhibition', 'grid');
+								}}
+								class="cursor-pointer transition-opacity {exhibition === 'grid'
+									? 'opacity-100 drop-shadow-[0_0_3px_white]'
+									: 'opacity-50 hover:opacity-100'}"><Square /></button
+							>
+						</div>
+						<div class="flex w-fit items-center gap-2">
+							<span>Ordem:</span>
+							<button
+								onclick={() => {
+									handleVideoOrder('newest');
+								}}
+								class="cursor-pointer transition-opacity {treinamentosOrder === 'newest'
+									? 'opacity-100 drop-shadow-[0_0_3px_white]'
+									: 'opacity-50 hover:opacity-100'}">Novo</button
+							>
+							<button
+								onclick={() => {
+									handleVideoOrder('oldest');
+								}}
+								class="cursor-pointer transition-opacity {treinamentosOrder === 'oldest'
+									? 'opacity-100 drop-shadow-[0_0_3px_white]'
+									: 'opacity-50 hover:opacity-100'}">Velho</button
+							>
+						</div>
+					</div>
 					{#if exhibition === 'list'}
 						<table class="w-full table-fixed">
 							<thead class="border-b">
@@ -99,7 +149,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								{#each treinamentos as treinamento, i}
+								{#each treinamentosOrdered as treinamento, i}
 									<tr class="border-b border-white/20 text-nowrap">
 										<td class="overflow-hidden py-2 pr-2 overflow-ellipsis">
 											<a
@@ -123,7 +173,7 @@
 					{/if}
 					{#if exhibition === 'grid'}
 						<div class="grid w-full grid-cols-3 gap-4">
-							{#each treinamentos as treinamento, i}
+							{#each treinamentosOrdered as treinamento, i}
 								<div class="group relative flex flex-col gap-1">
 									<div class="aspect-video overflow-clip rounded-xl border border-white/20 shadow">
 										<img
@@ -151,27 +201,50 @@
 				</div>
 			{/if}
 		</div>
-		<div class="glass-bg flex w-full max-w-[70ch] flex-col items-center gap-2 p-4">
-			<h2 class="cool-title">Trilhas</h2>
-			<button class="button-base"><span>Adicionar Trilha</span><span><Add /></span></button>
-			<div class="flex w-full items-center gap-2">
-				<span>Exibição:</span>
-				<button onclick={() => (exhibition = 'list')} class="cursor-pointer"><List /></button>
-				<button onclick={() => (exhibition = 'grid')} class="cursor-pointer"><Square /></button>
-			</div>
+		<div class="glass-bg flex w-full max-w-[80ch] flex-col items-center gap-2 p-4">
+			<button onclick={() => (showTrilhas = !showTrilhas)} class="relative cursor-pointer">
+				<h2 class="cool-title">Trilhas</h2>
+				<div class="absolute -right-10 bottom-0 h-full cursor-pointer">
+					<Chevron class="text-3xl transition-all {showTrilhas ? 'rotate-180' : ''}" />
+				</div>
+			</button>
+			{#if showTrilhas}
+				<div class="flex w-full flex-col items-center gap-2 p-4" transition:slide>
+					<button class="button-base"><span>Adicionar Trilha</span><span><Add /></span></button>
+					<div class="flex w-full items-center gap-2">
+						<span>Exibição:</span>
+						<button onclick={() => (exhibition = 'list')} class="cursor-pointer"><List /></button>
+						<button onclick={() => (exhibition = 'grid')} class="cursor-pointer"><Square /></button>
+					</div>
+				</div>
+			{/if}
 		</div>
 
-		<div class="glass-bg flex w-full max-w-[70ch] flex-col items-center gap-2 p-4">
-			<h2 class="cool-title">Todos os usuários</h2>
-			<div>
-				<p>Lista de todos os usuários</p>
-			</div>
+		<div class="glass-bg flex w-full max-w-[80ch] flex-col items-center gap-2 p-4">
+			<button onclick={() => (showUsers = !showUsers)} class="relative cursor-pointer">
+				<h2 class="cool-title">Usuários</h2>
+				<div class="absolute -right-10 bottom-0 h-full cursor-pointer">
+					<Chevron class="text-3xl transition-all {showUsers ? 'rotate-180' : ''}" />
+				</div>
+			</button>
+			{#if showUsers}
+				<div transition:slide>
+					<p>Lista de todos os usuários</p>
+				</div>
+			{/if}
 		</div>
-		<div class="glass-bg flex w-full max-w-[70ch] flex-col items-center gap-2 p-4">
-			<h2 class="cool-title">Cumbuca</h2>
-			<div>
-				<p>Menu para administrar cumbuca</p>
-			</div>
+		<div class="glass-bg flex w-full max-w-[80ch] flex-col items-center gap-2 p-4">
+			<button onclick={() => (showCumbuca = !showCumbuca)} class="relative cursor-pointer">
+				<h2 class="cool-title">Cumbuca</h2>
+				<div class="absolute -right-10 bottom-0 h-full cursor-pointer">
+					<Chevron class="text-3xl transition-all {showCumbuca ? 'rotate-180' : ''}" />
+				</div>
+			</button>
+			{#if showCumbuca}
+				<div transition:slide>
+					<p>Menu para administrar cumbuca</p>
+				</div>
+			{/if}
 		</div>
 		<button onclick={() => goto(`/${currentUsername.value}`)} class="button-base"
 			>Ir para o seu perfil</button
@@ -181,3 +254,75 @@
 		<button onclick={() => goto('/')} class="button-base">Voltar</button>
 	{/if}
 </main>
+
+{#if addVideo}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
+		onclick={() => (addVideo = false)}
+	>
+		<div
+			onclick={(e) => e.stopPropagation()}
+			class="flex flex-col gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
+		>
+			<div class="flex flex-col gap-2">
+				<div>
+					<input
+						type="text"
+						name="link"
+						id="link"
+						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						placeholder="Link do Vídeo"
+						bind:value={addVideoLink}
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						name="titulo"
+						id="titulo"
+						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						placeholder="Título do Vídeo"
+						bind:value={addVideoTitle}
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						name="autor"
+						id="autor"
+						placeholder="Autoria do Vídeo"
+						bind:value={addVideoAuthor}
+					/>
+				</div>
+			</div>
+			<div class="flex flex-col gap-2">
+				<button
+					disabled={!addVideoLink || !addVideoTitle || !addVideoAuthor}
+					onclick={() => {
+						const newVideo = {
+							link: addVideoLink,
+							titulo: addVideoTitle,
+							autor: addVideoAuthor
+						};
+						treinamentos = [...treinamentos, newVideo];
+						addVideo = false;
+					}}
+					class="button-base disabled:pointer-events-none disabled:opacity-50">Salvar</button
+				>
+				<button
+					onclick={() => {
+						addVideoAuthor = '';
+						addVideoLink = '';
+						addVideoTitle = '';
+						addVideo = false;
+					}}
+					class="button-base border border-white bg-transparent text-white hover:bg-white hover:text-black"
+					>Cancelar</button
+				>
+			</div>
+		</div>
+	</div>
+{/if}
