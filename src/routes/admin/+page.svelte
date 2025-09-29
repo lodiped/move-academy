@@ -20,6 +20,8 @@
 	let treinamentosOrder = $state('');
 	let exhibition = $state('list');
 
+	let trilhas: any = $state([]);
+
 	let showTreinamentos = $state(false);
 	let showTrilhas = $state(false);
 	let showUsers = $state(false);
@@ -29,6 +31,15 @@
 	let addVideoLink = $state('');
 	let addVideoTitle = $state('');
 	let addVideoAuthor = $state('');
+
+	let addTrilha = $state(false);
+	let addTrilhaTitle = $state('');
+	let addTrilhaDesc = $state('');
+	let newTrilhaSectors: string[] = $state([]);
+
+	let sectorIdx: number | undefined = $state();
+
+	let sectors: string[] = $state(['', 'bpo', 'contabil', 'geral']);
 
 	function handleVideoOrder(order: string) {
 		if (order === 'newest') {
@@ -210,7 +221,9 @@
 			</button>
 			{#if showTrilhas}
 				<div class="flex w-full flex-col items-center gap-2 p-4" transition:slide>
-					<button class="button-base"><span>Adicionar Trilha</span><span><Add /></span></button>
+					<button class="button-base" onclick={() => (addTrilha = true)}
+						><span>Adicionar Trilha</span><span><Add /></span></button
+					>
 					<div class="flex w-full items-center gap-2">
 						<span>Exibição:</span>
 						<button onclick={() => (exhibition = 'list')} class="cursor-pointer"><List /></button>
@@ -293,7 +306,7 @@
 						class="rounded-lg bg-white/10 placeholder:text-white/50"
 						name="autor"
 						id="autor"
-						placeholder="Autoria do Vídeo"
+						placeholder="Autor do Vídeo"
 						bind:value={addVideoAuthor}
 					/>
 				</div>
@@ -318,6 +331,127 @@
 						addVideoLink = '';
 						addVideoTitle = '';
 						addVideo = false;
+					}}
+					class="button-base border border-white bg-transparent text-white hover:bg-white hover:text-black"
+					>Cancelar</button
+				>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if addTrilha}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
+		onclick={() => {
+			addTrilha = false;
+			addTrilhaDesc = '';
+			addTrilhaTitle = '';
+			newTrilhaSectors = [];
+		}}
+	>
+		<div
+			onclick={(e) => e.stopPropagation()}
+			class="flex flex-col gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
+		>
+			<div class="flex flex-col gap-2">
+				<div>
+					<input
+						type="text"
+						name="titulo"
+						id="titulo"
+						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						placeholder="Título da Trilha"
+						bind:value={addTrilhaTitle}
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						name="descricao"
+						id="descricao"
+						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						placeholder="Descrição da Trilha"
+						bind:value={addTrilhaDesc}
+					/>
+				</div>
+				<select
+					name="sector"
+					id="sector"
+					class="rounded-lg bg-white/10 placeholder:text-white/50"
+					bind:value={sectorIdx}
+					onchange={() => {
+						if (sectorIdx! > 0) {
+							if (newTrilhaSectors.length) {
+								for (let i = 0; i < newTrilhaSectors.length; i++) {
+									if (newTrilhaSectors[i] === sectors[sectorIdx!]) {
+										newTrilhaSectors.splice(i, 1);
+									}
+								}
+								newTrilhaSectors.sort();
+							}
+							if (sectors[sectorIdx!]) {
+								newTrilhaSectors.push(sectors[sectorIdx!]);
+								newTrilhaSectors.sort();
+							}
+						}
+					}}
+				>
+					{#each sectors as sector, i}
+						<option class="text-black" value={i}>{sector}</option>
+					{/each}
+				</select>
+				{#if newTrilhaSectors.length}
+					<div class="flex gap-1">
+						{#each newTrilhaSectors as sector, i}
+							<button
+								class="w-fit rounded-full bg-white/10 p-1 px-3 text-sm"
+								onclick={() => {
+									newTrilhaSectors.splice(i, 1);
+									newTrilhaSectors.sort();
+								}}>{sector}</button
+							>
+						{/each}
+					</div>
+				{/if}
+				<div>
+					<input
+						type="text"
+						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						name="autor"
+						id="autor"
+						placeholder="Autor do Vídeo"
+						bind:value={addVideoAuthor}
+					/>
+				</div>
+			</div>
+			<div class="flex flex-col gap-2">
+				<button
+					disabled={!addVideoLink || !addVideoTitle || !addVideoAuthor}
+					onclick={() => {
+						const newTrilha = {
+							titulo: addTrilhaTitle,
+							descricao: addTrilhaDesc,
+							sector: newTrilhaSectors
+						};
+						const newVideo = {
+							link: addVideoLink,
+							titulo: addVideoTitle,
+							autor: addVideoAuthor
+						};
+						trilhas = [...trilhas, newTrilha];
+						addTrilha = false;
+					}}
+					class="button-base disabled:pointer-events-none disabled:opacity-50">Salvar</button
+				>
+				<button
+					onclick={() => {
+						addTrilhaDesc = '';
+						addTrilhaTitle = '';
+						newTrilhaSectors = [];
+						addTrilha = false;
 					}}
 					class="button-base border border-white bg-transparent text-white hover:bg-white hover:text-black"
 					>Cancelar</button
