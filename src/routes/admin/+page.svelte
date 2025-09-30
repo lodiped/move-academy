@@ -21,6 +21,7 @@
 	let exhibition = $state('list');
 
 	let trilhas: any = $state([]);
+	let trilhaList = $state([false, false, false]);
 
 	let showTreinamentos = $state(false);
 	let showTrilhas = $state(false);
@@ -51,6 +52,7 @@
 			treinamentosOrder = 'oldest';
 		}
 	}
+
 	onMount(() => {
 		const layout = localStorage.getItem('exhibition');
 		exhibition = layout ? layout : 'grid';
@@ -58,10 +60,19 @@
 			get(child(ref(database), 'treinamentos'))
 				.then((snapshot) => {
 					if (snapshot.exists()) {
-						console.log(snapshot.val());
 						treinamentos = snapshot.val();
 						treinamentosOrdered = treinamentos;
 						treinamentosOrder = 'oldest';
+					} else {
+						console.log('No data available');
+					}
+				})
+				.catch((err) => console.error(err));
+			get(child(ref(database), 'trilhas'))
+				.then((snapshot) => {
+					if (snapshot.exists()) {
+						trilhas = snapshot.val();
+						console.log(trilhas);
 					} else {
 						console.log('No data available');
 					}
@@ -221,13 +232,58 @@
 			</button>
 			{#if showTrilhas}
 				<div class="flex w-full flex-col items-center gap-2 p-4" transition:slide>
-					<button class="button-base" onclick={() => (addTrilha = true)}
-						><span>Adicionar Trilha</span><span><Add /></span></button
-					>
 					<div class="flex w-full items-center gap-2">
 						<span>Exibição:</span>
 						<button onclick={() => (exhibition = 'list')} class="cursor-pointer"><List /></button>
 						<button onclick={() => (exhibition = 'grid')} class="cursor-pointer"><Square /></button>
+					</div>
+					<div class="flex w-full flex-col gap-2">
+						{#each trilhas as trilha, i}
+							<div class="group/button">
+								<button
+									class="group/button relative w-full cursor-pointer rounded-xl bg-slate-700 py-4 shadow transition-all hover:shadow-lg"
+									onclick={() => (trilhaList[i] = !trilhaList[i])}
+								>
+									<span
+										class="cool-title font-['Grifter'] text-xl uppercase transition-all group-hover/button:drop-shadow-[0_0_3px_white]/50"
+										>{trilha.titulo}</span
+									>
+									<div
+										class="absolute top-0 right-5 flex h-full cursor-pointer items-center transition-transform {trilhaList[
+											i
+										]
+											? 'rotate-180'
+											: ''}"
+									>
+										<Chevron class="text-3xl" />
+									</div>
+								</button>
+							</div>
+							{#if trilhaList[i]}
+								<div transition:slide class="flex w-full flex-col gap-2">
+									{#each trilha.videos as video, i}
+										<div class=" flex justify-between gap-2 rounded border border-white/10 p-2">
+											<span class="cool-title w-[1.5ch] text-center font-['Grifter'] text-xl"
+												>{i + 1}</span
+											>
+											<span class="w-full text-left">{video.titulo}</span>
+											<div class="flex w-[12ch] gap-0.5">
+												<button class="rounded bg-slate-700 px-2 {i === 0 ? 'opacity-50' : ''}"
+													>/\</button
+												>
+												<button class="rounded bg-slate-700 px-2">\/</button>
+												<button class="rounded bg-slate-700 px-1 hover:text-red-500"
+													><Trash /></button
+												>
+											</div>
+										</div>
+									{/each}
+									<div class="flex justify-end">
+										<button class="button-base w-fit text-right">Salvar</button>
+									</div>
+								</div>
+							{/if}
+						{/each}
 					</div>
 				</div>
 			{/if}
