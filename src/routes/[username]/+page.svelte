@@ -1,9 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { auth } from '$lib/firebase';
-	import { currentUsername, isLogged, isUser, isAdmin } from '$lib/state.svelte';
-	import { untrack } from 'svelte';
+	import { auth, googleProvider } from '$lib/firebase';
+	import {
+		currentUsername,
+		isLogged,
+		isUser,
+		isAdmin,
+		getSector,
+		getEnrolled
+	} from '$lib/state.svelte';
+	import { onMount, untrack } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { isLoading, enrolled } from '$lib/state.svelte';
+	import { signInWithPopup, signOut } from 'firebase/auth';
 
 	import Cumbucas from '$lib/components/Cumbucas.svelte';
 	import User from '$lib/components/User.svelte';
@@ -11,10 +20,73 @@
 	import Matriculados from '$lib/components/Matriculados.svelte';
 	import Disponiveis from '$lib/components/Disponiveis.svelte';
 
+	async function handleGoogleSignOut() {
+		try {
+			await signOut(auth);
+		} catch (error) {
+			console.error(error);
+		} finally {
+			isLogged.value = false;
+			isUser.value = false;
+			return;
+		}
+	}
+
+	//TEMPORARIOOOOOOOOOOOOOOOO
+
+	let disponiveis = {
+		a1: {
+			titulo: 'BPO Financeiro',
+			trilha: true,
+			progresso: 0
+		},
+		'00': {
+			titulo: 'Contábil',
+			trilha: true,
+			progresso: 0
+		},
+		'01': {
+			titulo: 'Contábil',
+			trilha: true,
+			progresso: 0
+		},
+		'02': {
+			titulo: 'Contábil',
+			trilha: true,
+			progresso: 0
+		},
+		'03': {
+			titulo: 'Contábil',
+			trilha: true,
+			progresso: 0
+		},
+		'04': {
+			titulo: 'Contábil',
+			trilha: true,
+			progresso: 0
+		}
+	};
+
+	function prettyEnrolled() {
+		let prettyEnrolled: any = [];
+		for (let i = 0; i < enrolled.value.length; i++) {
+			prettyEnrolled.push(disponiveis[enrolled.value[i].id]);
+		}
+		console.log(prettyEnrolled);
+		return prettyEnrolled;
+	}
+
+	//TEMPORARIOOOOOOOOOOOOOOOOO
+
 	$effect(() => {
-		untrack(() => {
+		untrack(async () => {
+			currentUsername.value = page.params.username;
+			await getSector();
+			await getEnrolled();
+			prettyEnrolled();
 			if (!isLogged.value || (!isUser.value && !isAdmin.value)) {
 				console.log('not logged in @movenegocios.com.br account');
+				await handleGoogleSignOut();
 				goto('/');
 				return;
 			}

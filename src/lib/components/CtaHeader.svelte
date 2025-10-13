@@ -9,12 +9,18 @@
 		<div class="flex w-full flex-col">
 			<p class="font-['Grifter'] text-2xl font-bold tracking-wide text-white/85">Título do vídeo</p>
 			<div class="flex items-center gap-3">
-				<div class="h-3 min-h-3 w-full rounded-full bg-stone-800/50 shadow">
+				<div class="flex w-full items-center justify-start gap-2">
 					<div
-						class=" from-accent-500 min-h-3 w-2/3 rounded-full bg-linear-to-t to-[#66ccff] shadow"
-					></div>
+						class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+					>
+						<div class="progress-bar relative overflow-hidden" style="width: 65%">
+							<div
+								class="bg-linear absolute top-0 -left-[70px] h-full w-[60px] bg-linear-90 from-transparent via-white to-transparent transition-all duration-1000 group-hover:left-[100%]"
+							></div>
+						</div>
+					</div>
+					<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">65%</span>
 				</div>
-				<span class="text-xl">65%</span>
 			</div>
 			<p class="font-['Grifter'] text-white/85">Trilha: BPO Financeiro - Modulo X</p>
 		</div>

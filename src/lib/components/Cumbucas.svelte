@@ -65,14 +65,12 @@
 	}
 </script>
 
-<div
-	class=" flex flex-col gap-2 rounded-3xl border-t border-r border-b border-t-white/50 border-r-white/30 border-b-white/10 bg-linear-30 from-white/5 to-white/30 p-3 shadow shadow-black/20 transition-all"
->
+<div class="glass-bg flex flex-col gap-2 p-3 transition-all">
 	<h2 class="cool-title px-3 pb-3">Cumbuca Atual</h2>
 	{#if currentBook.link}
 		<div class="flex w-full justify-center">
 			<div
-				class="relative flex min-h-70 w-45 items-center justify-center rounded bg-cover bg-center shadow-[0_3px_10px] shadow-black/50"
+				class="relative flex min-h-70 w-45 items-center justify-center rounded-xl bg-cover bg-center shadow-[0_3px_10px] shadow-black/50"
 				style={`background-image: url('/cumbuca/${currentBook.link}.jpg');`}
 			>
 				<div
@@ -99,6 +97,7 @@
 		</div>
 	{/if}
 
+	<div class="w-full text-center">Próxima Cumbuca: <span>10/11</span></div>
 	<div class="flex flex-col">
 		<p class="text-center font-['Grifter'] tracking-wider opacity-85">Cronograma</p>
 		{#if showCronograma}

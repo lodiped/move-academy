@@ -1,4 +1,5 @@
 import { auth, get, child, ref, getDatabase } from '$lib/firebase.js';
+import { page } from '$app/state';
 import { goto } from '$app/navigation';
 export const isAdmin = $state({ value: false });
 export const isUser = $state({ value: false });
@@ -11,7 +12,10 @@ export const emailsArray: any = $state({ value: [] });
 
 export const currentUsername = $state({ value: '' });
 
+export const sector = $state({ value: '' });
+
 export const authStuff = async () => {
+	console.log('authStuff', isLogged.value);
 	if (!isLogged.value) {
 		auth.onAuthStateChanged(async (user) => {
 			firstVisit.value = false;
@@ -61,16 +65,22 @@ export const authStuff = async () => {
 				}
 				isLogged.value = true;
 				isLoading.value = false;
+				console.log('is logged in');
 			} catch (error) {
 				console.error(error);
 			}
 		});
 	} else {
-		goto(`/${currentUsername.value}`);
+		if (currentUsername.value) {
+			goto(`/${currentUsername.value}`);
+		} else {
+			goto('/');
+		}
 	}
 };
 
 export const namesConvert: any = $state({
+	pedroloditeste: 'Pedro Lodi',
 	amandacastro: 'Amanda Castro',
 	andrecastro: 'Andre Castro',
 	andreussiegrist: 'Andreus Siegrist',
@@ -129,4 +139,58 @@ export async function getBooks() {
 		console.error('getBooks failed:', error);
 		throw error;
 	}
+}
+
+export async function getSector() {
+	if (isLogged.value) {
+		try {
+			if (currentUsername.value !== page.params.username)
+				throw new Error('currentUsername.value !== page.params.username');
+			const res = await get(ref(getDatabase(), 'users/' + currentUsername.value + '/setor'));
+			if (!res.exists()) {
+				throw new Error("Couldn't get data at /users/" + currentUsername.value + '/setor');
+			}
+			const snap = res.val();
+			if (snap) {
+				sector.value = snap;
+			}
+			console.log(sector.value);
+		} catch (err) {
+			console.error(err);
+			throw err;
+		}
+	} else {
+		goto('/');
+	}
+}
+
+export const enrolled: any = $state({ value: [] });
+
+export async function getEnrolled() {
+	try {
+		const res = await get(ref(getDatabase(), 'users/' + currentUsername.value + '/matriculado'));
+		if (!res.exists()) {
+			throw new Error("Couldn't get data at /users/" + currentUsername.value + '/matriculado');
+		}
+		const snap = res.val();
+		if (snap) {
+			enrolled.value = parseEnrolled(snap);
+		}
+		console.log(enrolled.value);
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
+export function parseEnrolled(enrolled: string) {
+	const re = /(.{2})(\d{3})/g;
+	const result = [];
+	let m;
+	while ((m = re.exec(enrolled)) !== null) {
+		const id = m[1];
+		const progress = parseInt(m[2]);
+		result.push({ id, progress: Math.max(0, Math.min(100, progress)) });
+	}
+	return result;
 }

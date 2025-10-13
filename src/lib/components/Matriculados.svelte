@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 
-	// @ts-ignore
 	import Check from 'virtual:icons/mdi/check-circle-outline';
-	// @ts-ignore
 	import Lock from 'virtual:icons/mdi/lock';
-	// @ts-ignore
 	import Chevron from 'virtual:icons/mdi/chevron-down';
-	// @ts-ignore
 	import Play from 'virtual:icons/mdi/play';
+
+	//TODO: Funcao para passar o brilho de uma vez pelo progress bar. Ela precisa criar o elemento e depois deletar
 
 	let trilhaTest = $state(false);
 </script>
@@ -19,16 +17,25 @@
 	<div class="flex w-full flex-col px-3 transition-all">
 		<button
 			onclick={() => (trilhaTest = !trilhaTest)}
-			class="group flex w-full cursor-pointer gap-4 rounded-lg bg-stone-800 p-4"
+			class="group flex w-full cursor-pointer items-center gap-4 p-4 px-6 transition-all {trilhaTest
+				? 'inset-button'
+				: 'high-button'}"
 		>
 			<div class="flex w-2/3 justify-between gap-2">
-				<span class="text-xl font-bold">Trilha: BPO Financeiro</span>
+				<span class="font-['Grifter'] text-xl text-gray-200">Trilha: BPO Financeiro</span>
 				<span class="opacity-50">Módulo X</span>
 			</div>
-			<div class="flex w-1/3 items-center justify-center">
-				<div class="h-3 min-h-3 w-full rounded-full bg-stone-300">
-					<div class="bg-accent-500 min-h-3 w-2/3 rounded-full"></div>
+			<div class="flex w-1/3 items-center gap-2">
+				<div
+					class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+				>
+					<div class="progress-bar relative overflow-hidden" style="width: 65%">
+						<div
+							class="bg-linear absolute top-0 -left-[70px] h-full w-[60px] bg-linear-90 from-transparent via-white to-transparent transition-all duration-1000 group-hover:left-[100%]"
+						></div>
+					</div>
 				</div>
+				<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">65%</span>
 			</div>
 			<div class="flex items-center justify-center text-2xl">
 				<Chevron class="transition-all {trilhaTest ? 'rotate-180' : ''}" />
@@ -37,16 +44,21 @@
 		{#if trilhaTest}
 			<div
 				transition:slide={{ duration: 200 }}
-				class="mx-3 flex w-auto flex-col gap-3 rounded-b-lg bg-stone-900 p-3 px-5"
+				class="mx-3 flex w-auto flex-col gap-3 rounded-b-lg p-3 px-5"
 			>
 				<div class="flex items-center justify-between gap-2 opacity-50">
 					<div class="flex w-full items-center gap-2">
 						<Check class="text-green-500" />
 						<span>Título do video 1</span>
 					</div>
-					<span>45:00</span>
-					<div class="h-3 min-h-3 w-full max-w-1/3 rounded-full bg-stone-300">
-						<div class="bg-accent-500 min-h-3 w-full rounded-full"></div>
+					<span class="font-['Grifter'] text-sm">45:00</span>
+					<div class="flex w-full max-w-1/3 items-center gap-2">
+						<div
+							class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+						>
+							<div class="progress-bar-full" style="width: 100%"></div>
+						</div>
+						<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">100%</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-between gap-2 opacity-50">
@@ -54,9 +66,14 @@
 						<Check class="text-green-500" />
 						<span>Título do video 2</span>
 					</div>
-					<span>33:33</span>
-					<div class="h-3 min-h-3 w-full max-w-1/3 rounded-full bg-stone-300">
-						<div class="bg-accent-500 min-h-3 w-full rounded-full"></div>
+					<span class="font-['Grifter'] text-sm">33:33</span>
+					<div class="flex w-full max-w-1/3 items-center gap-2">
+						<div
+							class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+						>
+							<div class="progress-bar-full" style="width: 100%"></div>
+						</div>
+						<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">100%</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-between gap-2">
@@ -64,9 +81,14 @@
 						<Play />
 						<span>Título do video 3</span>
 					</div>
-					<span>1:05:04</span>
-					<div class="h-3 min-h-3 w-full max-w-1/3 rounded-full bg-stone-300">
-						<div class="bg-accent-500 min-h-3 w-2/3 rounded-full"></div>
+					<span class="font-['Grifter'] text-sm">1:05:04</span>
+					<div class="flex w-full max-w-1/3 items-center gap-2">
+						<div
+							class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+						>
+							<div class="progress-bar" style="width: 65%"></div>
+						</div>
+						<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">65%</span>
 					</div>
 				</div>
 				<div class="text-accent-700 flex items-center justify-between gap-2">
@@ -74,41 +96,62 @@
 						<Lock />
 						<span>Título do video 4</span>
 					</div>
-					<span>1:05:04</span>
-					<div class="h-3 min-h-3 w-full max-w-1/3 rounded-full bg-stone-300">
-						<div class="bg-accent-500 min-h-3 w-0 rounded-full"></div>
+					<span class="font-['Grifter'] text-sm">1:05:04</span>
+					<div class="flex w-full max-w-1/3 items-center gap-2">
+						<div
+							class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+						>
+							<div class="progress-bar" style="width: 0%"></div>
+						</div>
+						<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">0%</span>
 					</div>
 				</div>
 			</div>
 		{/if}
 	</div>
 
-	<button class="group mx-3 flex cursor-pointer gap-4 rounded-lg bg-stone-800 p-4">
+	<button class="group high-button mx-3 flex cursor-pointer gap-4 p-4 px-6">
 		<div class="flex w-2/3 justify-between gap-2">
-			<span class="text-xl font-bold">Trilha: Contábil</span>
+			<span class="font-['Grifter'] text-xl text-gray-200">Trilha: Contábil</span>
 			<span class="opacity-50">Completo</span>
 		</div>
-		<div class="flex w-1/3 items-center justify-center">
-			<div class="h-3 min-h-3 w-full rounded-full bg-stone-300">
-				<div class="bg-accent-500 min-h-3 w-full rounded-full"></div>
+		<div class="flex w-1/3 items-center justify-start gap-2">
+			<div
+				class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+			>
+				<div class="progress-bar-full relative overflow-hidden" style="width: 100%">
+					<div
+						class="bg-linear absolute top-0 -left-[70px] h-full w-[60px] bg-linear-90 from-transparent via-white to-transparent transition-all duration-1000 group-hover:left-[100%]"
+					></div>
+				</div>
 			</div>
+			<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">100%</span>
 		</div>
 		<div class="flex items-center justify-center text-2xl">
 			<Chevron />
 		</div>
 	</button>
-	<button class="group mx-3 flex cursor-pointer gap-4 rounded-lg bg-stone-800 p-4">
-		<div class="flex w-2/3 justify-between gap-2">
-			<span class="text-xl font-bold">Trilha: Onboarding</span>
-			<span class="opacity-50">Completo</span>
+	<button class="group high-button relative mx-3 flex cursor-pointer gap-4 p-4 px-6">
+		<div
+			class="absolute top-0 flex h-full -translate-x-10 items-center text-xl opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+			transition:slide
+		>
+			<Play />
 		</div>
-		<div class="flex w-1/3 items-center justify-center">
-			<div class="h-3 min-h-3 w-full rounded-full bg-stone-300">
-				<div class="bg-accent-500 min-h-3 w-full rounded-full"></div>
+		<div class="flex w-2/3 justify-between gap-2 transition-all group-hover:translate-x-10">
+			<span class="font-['Grifter'] text-xl text-gray-200">Treinamento Qualquer</span>
+		</div>
+		<div class="flex w-1/3 items-center justify-start gap-2">
+			<div
+				class="group inset-button relative flex h-fit min-h-7 w-full items-center justify-start gap-2 rounded-full px-2.5"
+			>
+				<div class="progress-bar-full relative overflow-hidden" style="width: 100%">
+					<div
+						class="bg-linear absolute top-0 -left-[70px] h-full w-[60px] bg-linear-90 from-transparent via-white to-transparent transition-all duration-1000 group-hover:left-[100%]"
+					></div>
+				</div>
 			</div>
-		</div>
-		<div class="flex items-center justify-center text-2xl">
-			<Chevron />
+			<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">100%</span>
 		</div>
 	</button>
 </div>
