@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { database } from '$lib/firebase';
 	import { get, child, ref } from 'firebase/database';
-	import { isAdmin } from '$lib/state.svelte';
+	import { isAdmin, version } from '$lib/state.svelte';
 	let showTreinamentos = $state(false);
 	let exhibition = $state('list');
 
@@ -24,6 +24,91 @@
 	let addVideoTitle = $state('');
 	let addVideoAuthor = $state('');
 
+	// TESTE \/ \/ \/
+
+	let videosCache: any = null;
+
+	function checkLocalStorage() {
+		if (localStorage.treinamentos) {
+			videosCache = JSON.parse(localStorage.treinamentos);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	async function checkVersion() {
+		return new Promise<boolean>(async (resolve, reject) => {
+			try {
+				const snapshot = await get(child(ref(database), 'version'));
+				const dbVersion = snapshot.val() ? snapshot.val() : null;
+				if (localStorage.version == dbVersion) {
+					resolve(true);
+				} else {
+					localStorage.version = dbVersion;
+					version.value = dbVersion;
+					resolve(false);
+				}
+			} catch (err) {
+				console.log(err);
+			}
+		});
+	}
+
+	function parseObject(obj: any) {
+		return Object.entries(obj).map(([link, data]) => ({
+			link,
+			...videosCache[link]
+		}));
+	}
+
+	function order() {
+		let videos = parseObject(videosCache);
+		videos.sort((a: any, b: any) => a.data - b.data);
+		treinamentos = videos;
+		treinamentosOrdered = treinamentos;
+		treinamentosOrder = 'oldest';
+	}
+
+	async function fetchAndStore() {
+		return new Promise(async (resolve, reject) => {
+			const treinamentosSnap = await get(child(ref(database), 'treinamentosproper'));
+
+			videosCache = treinamentosSnap.val();
+			const treinamentosTest = treinamentosSnap.val();
+
+			localStorage.treinamentos = JSON.stringify(videosCache);
+			resolve(treinamentosTest);
+		});
+	}
+
+	async function getTreinamentos() {
+		await checkVersion().then(async (check) => {
+			if (!check) {
+				await fetchAndStore().then((treinamentosTest) => {
+					console.log('check failed: ', parseObject(treinamentosTest));
+					treinamentos = parseObject(treinamentosTest);
+					return parseObject(treinamentosTest);
+				});
+			} else {
+				if (!checkLocalStorage()) {
+					await fetchAndStore().then((treinamentosTest) => {
+						console.log('check ok but no localStorage: ', parseObject(treinamentosTest));
+						treinamentos = parseObject(treinamentosTest);
+						return parseObject(treinamentosTest);
+					});
+				} else {
+					videosCache = JSON.parse(localStorage.treinamentos);
+					console.log('check ok and localStorage: ', parseObject(videosCache));
+					treinamentos = parseObject(videosCache);
+					return parseObject(videosCache);
+				}
+			}
+		});
+	}
+
+	// TESTE /\ /\ /\
+
 	function handleVideoOrder(order: string) {
 		if (order === 'newest') {
 			treinamentosOrdered = treinamentos.toReversed();
@@ -35,21 +120,25 @@
 		}
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		const layout = localStorage.getItem('exhibition');
 		exhibition = layout ? layout : 'grid';
 		if (isAdmin && !treinamentos.length) {
-			get(child(ref(database), 'treinamentos'))
-				.then((snapshot) => {
-					if (snapshot.exists()) {
-						treinamentos = snapshot.val();
-						treinamentosOrdered = treinamentos;
-						treinamentosOrder = 'oldest';
-					} else {
-						console.log('No data available');
-					}
-				})
-				.catch((err) => console.error(err));
+			await getTreinamentos().then(() => {
+				order();
+			});
+
+			// get(child(ref(database), 'treinamentos'))
+			// 	.then((snapshot) => {
+			// 		if (snapshot.exists()) {
+			// 			treinamentos = snapshot.val();
+			// 			treinamentosOrdered = treinamentos;
+			// 			treinamentosOrder = 'oldest';
+			// 		} else {
+			// 			console.log('No data available');
+			// 		}
+			// 	})
+			// 	.catch((err) => console.error(err));
 		} else {
 			goto('/');
 			return;
@@ -69,7 +158,8 @@
 			<div class="flex w-full justify-center">
 				<button
 					onclick={() => {
-						addVideo = true;
+						// addVideo = true;
+						getTreinamentos();
 					}}
 					class="button-base"><span>Adicionar Video</span><span><Add /></span></button
 				>

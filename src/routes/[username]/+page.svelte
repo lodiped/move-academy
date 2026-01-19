@@ -7,7 +7,9 @@
 		isUser,
 		isAdmin,
 		getSector,
-		getEnrolled
+		getEnrolled,
+		emailsArray,
+		usernamesArray
 	} from '$lib/state.svelte';
 	import { onMount, untrack } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -23,18 +25,22 @@
 	async function handleGoogleSignOut() {
 		try {
 			await signOut(auth);
-		} catch (error) {
-			console.error(error);
-		} finally {
 			isLogged.value = false;
 			isUser.value = false;
+			isAdmin.value = false;
+			currentUsername.value = '';
+			emailsArray.value = [];
+			usernamesArray.value = [];
+			goto('/');
 			return;
+		} catch (error) {
+			console.error(error);
 		}
 	}
 
 	//TEMPORARIOOOOOOOOOOOOOOOO
 
-	let disponiveis = {
+	let disponiveis: any = {
 		a1: {
 			titulo: 'BPO Financeiro',
 			trilha: true,

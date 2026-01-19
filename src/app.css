@@ -26,9 +26,6 @@
 		letter-spacing: 0.1rem;
 		color: #0093c9;
 	}
-	.button-base {
-		@apply text-accent-700 flex cursor-pointer items-center justify-center gap-3 rounded-full bg-gray-300 p-3 px-4 font-['Grifter'] text-lg font-bold tracking-wider shadow-[inset_0_-2px_3px,0_1px_3px] inset-shadow-sm shadow-black/40 inset-shadow-white transition-transform hover:scale-105;
-	}
 	h1 {
 		font-size: 3rem;
 	}
@@ -37,6 +34,23 @@
 	}
 	h3 {
 		font-size: 1.5rem;
+	}
+	body {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		font-family: 'JetBrains Mono', monospace;
+		color: white;
+		/* @apply bg-[url('/assets/background3.png')] bg-fixed; */
+		@apply bg-stone-800;
+	}
+}
+
+@layer components {
+	.button-base {
+		@apply text-accent-700 flex cursor-pointer items-center justify-center gap-3 rounded-full bg-gray-300 p-3 px-4 font-['Grifter'] text-lg font-bold tracking-wider shadow-[inset_0_-2px_3px,0_1px_3px] inset-shadow-sm shadow-black/40 inset-shadow-white transition-transform hover:scale-105;
 	}
 	.cool-title {
 		@apply bg-linear-to-t from-white/50 to-white to-60% bg-clip-text text-transparent text-shadow-black/10 text-shadow-lg;
@@ -65,15 +79,7 @@
 	.progress-bar-fullBACKUP {
 		@apply min-h-3 rounded-full bg-linear-to-t from-[#555] to-[#ccc] shadow inset-shadow-xs shadow-black/30 inset-shadow-white;
 	}
-	body {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		font-family: 'JetBrains Mono', monospace;
-		color: white;
-		/* @apply bg-[url('/assets/background3.png')] bg-fixed; */
-		@apply bg-stone-800;
+	.shine {
+		@apply absolute top-0 h-full w-[60px] bg-linear-90 from-transparent via-white to-transparent transition-all duration-1000;
 	}
 }

@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
+	import { onMount } from 'svelte';
 	import { signInWithPopup, signOut } from 'firebase/auth';
-	import { auth, googleProvider, get, child, ref, getDatabase } from '$lib/firebase';
+	import { auth, googleProvider } from '$lib/firebase';
 	import {
 		isUser,
 		isLogged,
 		currentUsername,
 		isLoading,
-		authStuff,
-		isAdmin
+		isAdmin,
+		emailsArray,
+		usernamesArray,
+		getAuth
 	} from '$lib/state.svelte';
 	import { goto } from '$app/navigation';
 
@@ -21,7 +23,10 @@
 			const result = await signInWithPopup(auth, googleProvider);
 			const user = result.user;
 			console.log(user);
-			isLoading.value = false;
+			getAuth().then(() => {
+				isLoading.value = false;
+				routingStuff();
+			});
 		} catch (error) {
 			console.error(error);
 			isLoading.value = false;
@@ -31,18 +36,22 @@
 	async function handleGoogleSignOut() {
 		try {
 			await signOut(auth);
-		} catch (error) {
-			console.error(error);
-		} finally {
 			isLogged.value = false;
 			isUser.value = false;
+			isAdmin.value = false;
+			currentUsername.value = '';
+			emailsArray.value = [];
+			usernamesArray.value = [];
+			console.log('logging out and resetting vars');
+			goto('/');
 			return;
+		} catch (error) {
+			console.error(error);
 		}
 	}
 
-	async function routingStuff() {
+	function routingStuff() {
 		console.log('routingStuff in running');
-		await authStuff();
 		if (isLogged.value) {
 			if (isUser.value) {
 				goto(`/${currentUsername.value}`);
@@ -56,19 +65,23 @@
 		}
 	}
 
-	$effect(() => {
-		// untrack(() => routingStuff());
-		routingStuff();
+	onMount(() => {
+		getAuth().then(() => {
+			console.log('onMount -> then running?');
+			routingStuff();
+		});
 	});
+
+	// $effect(() => {
+	// 	// untrack(() => routingStuff());
+	// 	routingStuff();
+	// });
 </script>
 
 <main class="flex w-full max-w-[90ch] flex-col items-center gap-5">
 	<h1>Move Academy</h1>
 	{#if isLoading.value}
-		isLoading
-	{/if}
-	{#if isLoading.value}
-		Bem-vindo ao Move Academy
+		Carregando
 	{:else if !isLogged.value}
 		<button onclick={handleGoogleSignIn} class="button-base">
 			<Google /><span>Entrar</span>

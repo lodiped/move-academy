@@ -1,11 +1,12 @@
 import { auth, get, child, ref, getDatabase } from '$lib/firebase.js';
 import { page } from '$app/state';
 import { goto } from '$app/navigation';
+import { browser } from '$app/environment';
+export const version = $state({ value: 0 });
 export const isAdmin = $state({ value: false });
 export const isUser = $state({ value: false });
 export const isLogged = $state({ value: false });
 export const isLoading = $state({ value: true });
-export const firstVisit = $state({ value: true });
 
 export const usernamesArray: any = $state({ value: [] });
 export const emailsArray: any = $state({ value: [] });
@@ -14,69 +15,162 @@ export const currentUsername = $state({ value: '' });
 
 export const sector = $state({ value: '' });
 
-export const authStuff = async () => {
-	console.log('authStuff', isLogged.value);
-	if (!isLogged.value) {
-		auth.onAuthStateChanged(async (user) => {
-			firstVisit.value = false;
-			isLoading.value = true;
-			if (!user) {
-				isLogged.value = false;
-				isUser.value = false;
-				isLoading.value = false;
-				isAdmin.value = false;
-				console.log('not logged in');
-				return;
-			}
+function getLocalVersion() {
+	if (browser) {
+		localStorage.getItem('version')
+			? (version.value = Number(localStorage.getItem('version')))
+			: localStorage.setItem('version', '0');
+		console.log('getting version:', version.value);
+	}
+}
+getLocalVersion();
 
-			const uid = user.uid;
-			console.log(uid);
-			try {
-				if (emailsArray.value.length === 0 || usernamesArray.value.length === 0) {
-					const adminSnap = await get(child(ref(getDatabase()), `/admin/${uid}`));
-					const snapshot = await get(child(ref(getDatabase()), '/emails'));
-					const userData = snapshot.exists() ? snapshot.val() : null;
-					if (userData) {
-						if (adminSnap.exists()) {
-							isAdmin.value = true;
-							isUser.value = false;
-							console.log('IS ADMIN');
-						} else {
-							isAdmin.value = false;
-							isUser.value = true;
-						}
-						emailsArray.value = Object.entries(userData).map(([username, email]) => {
-							return email;
-						});
-						usernamesArray.value = Object.entries(userData).map(([username, email]) => {
-							return username;
-						});
-						console.log(emailsArray.value);
-						for (let i = 0; i < emailsArray.value.length; i++) {
-							if (emailsArray.value[i] === user.email) {
-								currentUsername.value = usernamesArray.value[i];
-							}
-						}
-					} else {
-						console.error('No data available');
-						isLoading.value = false;
-						return;
-					}
-				}
-				isLogged.value = true;
-				isLoading.value = false;
-				console.log('is logged in');
-			} catch (error) {
-				console.error(error);
-			}
-		});
-	} else {
-		if (currentUsername.value) {
-			goto(`/${currentUsername.value}`);
-		} else {
-			goto('/');
+/////////////////////////////////////////////////////////////
+function _checkUser(user: any) {
+	if (!user) {
+		isLogged.value = false;
+		isUser.value = false;
+		isLoading.value = false;
+		isAdmin.value = false;
+		console.log("no 'user', returning");
+		return false;
+	}
+	return true;
+}
+
+function _assignCurrentUsername(user: any) {
+	for (let i = 0; i < emailsArray.value.length; i++) {
+		if (user && emailsArray.value[i] === user.email) {
+			currentUsername.value = usernamesArray.value[i];
 		}
 	}
+}
+
+async function _manageUser(user: any, _uid: string) {
+	if (emailsArray.value.length === 0 || usernamesArray.value.length === 0) {
+		const adminSnap = await get(child(ref(getDatabase()), `/admin/${_uid}`));
+		const snapshot = await get(child(ref(getDatabase()), '/emails'));
+		const userData = snapshot.exists() ? snapshot.val() : null;
+		if (userData) {
+			if (adminSnap.exists()) {
+				isAdmin.value = true;
+				isUser.value = false;
+				console.log('IS ADMIN');
+			} else {
+				isAdmin.value = false;
+				isUser.value = true;
+			}
+			emailsArray.value = Object.entries(userData).map(([username, email]) => {
+				return email;
+			});
+			usernamesArray.value = Object.entries(userData).map(([username, email]) => {
+				return username;
+			});
+			console.log(emailsArray.value);
+			_assignCurrentUsername(user);
+		} else {
+			isLoading.value = false;
+			console.error('no userData found');
+		}
+	} else {
+		_assignCurrentUsername(user);
+	}
+	isLogged.value = true;
+	isLoading.value = false;
+	console.log('is logged in');
+}
+
+export async function getAuth() {
+	return new Promise<void>((resolve, reject) => {
+		if (isLogged.value) {
+			resolve();
+			return;
+		}
+
+		const unsubscribe = auth.onAuthStateChanged(async (user) => {
+			let _uid: string;
+			try {
+				if (_checkUser(user)) {
+					_uid = user!.uid;
+					await _manageUser(user, _uid);
+				}
+				unsubscribe();
+				resolve();
+			} catch (err) {
+				console.error(err);
+				unsubscribe();
+				reject(err);
+			}
+		});
+	});
+}
+////////////////////////////////////////////////
+
+export const authStuff = async () => {
+	return new Promise<void>((resolve, reject) => {
+		console.log('authStuff', isLogged.value);
+		if (!isLogged.value) {
+			auth.onAuthStateChanged(async (user) => {
+				isLoading.value = true;
+				if (!user) {
+					isLogged.value = false;
+					isUser.value = false;
+					isLoading.value = false;
+					isAdmin.value = false;
+					console.log('not logged in');
+					return;
+				}
+
+				const uid = user.uid;
+				console.log(uid);
+				try {
+					if (emailsArray.value.length === 0 || usernamesArray.value.length === 0) {
+						const adminSnap = await get(child(ref(getDatabase()), `/admin/${uid}`));
+						const snapshot = await get(child(ref(getDatabase()), '/emails'));
+						const userData = snapshot.exists() ? snapshot.val() : null;
+						if (userData) {
+							if (adminSnap.exists()) {
+								isAdmin.value = true;
+								isUser.value = false;
+								console.log('IS ADMIN');
+							} else {
+								isAdmin.value = false;
+								isUser.value = true;
+							}
+							emailsArray.value = Object.entries(userData).map(([username, email]) => {
+								return email;
+							});
+							usernamesArray.value = Object.entries(userData).map(([username, email]) => {
+								return username;
+							});
+							console.log(emailsArray.value);
+							for (let i = 0; i < emailsArray.value.length; i++) {
+								if (emailsArray.value[i] === user.email) {
+									currentUsername.value = usernamesArray.value[i];
+								}
+							}
+						} else {
+							console.error('No data available');
+							isLoading.value = false;
+							return;
+						}
+					}
+					isLogged.value = true;
+					isLoading.value = false;
+					console.log('is logged in');
+					resolve();
+				} catch (error) {
+					console.error(error);
+				}
+			}, reject);
+		} else {
+			if (currentUsername.value) {
+				goto(`/${currentUsername.value}`);
+			} else {
+				goto('/');
+			}
+		}
+	});
 };
 
 export const namesConvert: any = $state({
