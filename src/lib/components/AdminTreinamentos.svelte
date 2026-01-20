@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { database } from '$lib/firebase';
-	import { get, child, ref } from 'firebase/database';
+	import { get, child, ref, set, getDatabase, update, runTransaction } from 'firebase/database';
 	import { isAdmin, version } from '$lib/state.svelte';
 	let showTreinamentos = $state(false);
 	let exhibition = $state('list');
@@ -24,7 +24,47 @@
 	let addVideoTitle = $state('');
 	let addVideoAuthor = $state('');
 
-	// TESTE \/ \/ \/
+	async function writeNewVideo(newVideo: any) {
+		const db = getDatabase();
+
+		const videoId = newVideo.link;
+
+		const postData = {
+			titulo: newVideo.titulo,
+			autor: newVideo.autor,
+			data: newVideo.data
+		};
+
+		const updates: any = {};
+		updates[`/treinamentosproper/${videoId}`] = postData;
+
+		return update(ref(db), updates)
+			.then(() => {
+				console.log('Video adicionado com sucesso!');
+				runTransaction(ref(database, 'version'), (version) => {
+					return version + 1;
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	async function removeVideo(link: string) {
+		const db = getDatabase();
+		return await set(ref(db, `treinamentosproper/${link}`), null)
+			.then(() => {
+				console.log('Video removido com sucesso!');
+				runTransaction(ref(database, 'version'), (version) => {
+					return version + 1;
+				});
+				getTreinamentos();
+				order();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	let videosCache: any = null;
 
@@ -107,8 +147,6 @@
 		});
 	}
 
-	// TESTE /\ /\ /\
-
 	function handleVideoOrder(order: string) {
 		if (order === 'newest') {
 			treinamentosOrdered = treinamentos.toReversed();
@@ -124,21 +162,11 @@
 		const layout = localStorage.getItem('exhibition');
 		exhibition = layout ? layout : 'grid';
 		if (isAdmin && !treinamentos.length) {
-			await getTreinamentos().then(() => {
-				order();
-			});
-
-			// get(child(ref(database), 'treinamentos'))
-			// 	.then((snapshot) => {
-			// 		if (snapshot.exists()) {
-			// 			treinamentos = snapshot.val();
-			// 			treinamentosOrdered = treinamentos;
-			// 			treinamentosOrder = 'oldest';
-			// 		} else {
-			// 			console.log('No data available');
-			// 		}
-			// 	})
-			// 	.catch((err) => console.error(err));
+			await getTreinamentos()
+				.catch((err) => console.error(err))
+				.then(() => {
+					order();
+				});
 		} else {
 			goto('/');
 			return;
@@ -158,8 +186,7 @@
 			<div class="flex w-full justify-center">
 				<button
 					onclick={() => {
-						// addVideo = true;
-						getTreinamentos();
+						addVideo = true;
 					}}
 					class="button-base"><span>Adicionar Video</span><span><Add /></span></button
 				>
@@ -253,8 +280,9 @@
 							>
 							<span class="text-sm opacity-70">{treinamento.autor}</span>
 							<div class="absolute hidden w-full justify-end p-3 group-hover:flex">
-								<button class="cursor-pointer transition-transform hover:scale-125 hover:rotate-30"
-									><Gear /></button
+								<button
+									class="cursor-pointer transition-transform hover:scale-125 hover:rotate-30"
+									onclick={() => removeVideo(treinamento.link)}><Gear /></button
 								>
 							</div>
 						</div>
@@ -276,13 +304,14 @@
 			onclick={(e) => e.stopPropagation()}
 			class="flex flex-col gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
 		>
-			<div class="flex flex-col gap-2">
+			<h2>Adicionar Video</h2>
+			<div class="flex w-full flex-col gap-2">
 				<div>
 					<input
 						type="text"
 						name="link"
 						id="link"
-						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						class="w-full rounded-lg bg-white/10 placeholder:text-white/50"
 						placeholder="Link do Vídeo"
 						bind:value={addVideoLink}
 					/>
@@ -292,7 +321,7 @@
 						type="text"
 						name="titulo"
 						id="titulo"
-						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						class="w-full rounded-lg bg-white/10 placeholder:text-white/50"
 						placeholder="Título do Vídeo"
 						bind:value={addVideoTitle}
 					/>
@@ -300,10 +329,10 @@
 				<div>
 					<input
 						type="text"
-						class="rounded-lg bg-white/10 placeholder:text-white/50"
+						class="w-full rounded-lg bg-white/10 placeholder:text-white/50"
 						name="autor"
 						id="autor"
-						placeholder="Autor do Vídeo"
+						placeholder="Autor(es) do Vídeo"
 						bind:value={addVideoAuthor}
 					/>
 				</div>
@@ -315,9 +344,11 @@
 						const newVideo = {
 							link: addVideoLink,
 							titulo: addVideoTitle,
-							autor: addVideoAuthor
+							autor: addVideoAuthor,
+							data: Date.now() / 1000
 						};
-						treinamentos = [...treinamentos, newVideo];
+						// treinamentos = [...treinamentos, newVideo];
+						writeNewVideo(newVideo);
 						addVideo = false;
 					}}
 					class="button-base disabled:pointer-events-none disabled:opacity-50">Salvar</button
