@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { database } from '$lib/firebase';
 	import { slide } from 'svelte/transition';
@@ -7,14 +7,15 @@
 	import { get, ref, child } from 'firebase/database';
 
 	import Chevron from 'virtual:icons/mdi/chevron-down';
-	import List from 'virtual:icons/mdi/format-list-bulleted';
-	import Square from 'virtual:icons/mdi/grid-large';
+	import Gear from 'virtual:icons/mdi/gear';
 	import Trash from 'virtual:icons/mdi/trash-can-outline';
-	import Add from 'virtual:icons/mdi/plus-thick';
-	let addVideo = $state(false);
+	import Save from 'virtual:icons/mdi/content-save';
+
 	let addVideoLink = $state('');
 	let addVideoTitle = $state('');
 	let addVideoAuthor = $state('');
+
+	let deleteModal = $state(false);
 
 	let trilhas: any = $state([]);
 	let trilhaList = $state([false, false, false]);
@@ -29,7 +30,51 @@
 	let treinamentos = $state([]);
 	let sectors: string[] = $state(['', 'bpo', 'contabil', 'geral']);
 
+	let unsavedChanges = $state(false);
+	function handleBeforeUnload(e: BeforeUnloadEvent) {
+		if (unsavedChanges) {
+			e.preventDefault();
+			e.returnValue = '';
+			return 'Você tem alterações pendentes. Tem certeza que deseja sair?';
+		}
+	}
+
+	////////////////////
+
+	function toggleTrilhaList(idx: number) {
+		trilhaList[idx] = !trilhaList[idx];
+	}
+	function checkLocalStorage() {
+		if (localStorage.trilhas) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function getTrilha() {
+		if (!checkLocalStorage()) {
+			get(child(ref(database), 'trilhasproper'))
+				.then((snapshot) => {
+					if (snapshot.exists()) {
+						trilhas = snapshot.val();
+						localStorage.trilhas = JSON.stringify(trilhas);
+						console.log('trilhasPROPERRRRRR ', trilhas);
+					} else {
+						console.log('No data available');
+					}
+				})
+				.catch((err) => console.error(err));
+		} else {
+			trilhas = JSON.parse(localStorage.trilhas);
+		}
+	}
+
+	////////////////////
+
 	onMount(() => {
+		window.addEventListener('beforeunload', handleBeforeUnload);
+
 		const layout = localStorage.getItem('exhibition');
 		exhibition = layout ? layout : 'grid';
 		if (isAdmin && !treinamentos.length) {
@@ -37,7 +82,7 @@
 				.then((snapshot) => {
 					if (snapshot.exists()) {
 						trilhas = snapshot.val();
-						console.log(trilhas);
+						console.log('TRILHAAAS', trilhas);
 					} else {
 						console.log('No data available');
 					}
@@ -48,6 +93,21 @@
 			return;
 		}
 	});
+	onDestroy(() => {
+		window.removeEventListener('beforeunload', handleBeforeUnload);
+	});
+
+	let altTrilhas = $state();
+	$effect(() => {
+		// Checar constantemente se houve alterações ao editar as trilhas.
+		// ou seja, salvar o estado original ao carregar, e esperar as alterações em outras vars.
+		// if (trilhas !== altTrilhas) {
+		// 	unsavedChanges = true;
+		// } else {
+		// 	unsavedChanges = false;
+		// }
+	});
+	// TODO Colocar ações nos HTML buttons em um faux var (altTrilhas) para o effect ler e comparar
 </script>
 
 <div
@@ -61,14 +121,9 @@
 	</button>
 	{#if showTrilhas}
 		<div class="flex w-full flex-col items-center gap-2 p-4" transition:slide>
-			<div class="flex w-full items-center gap-2">
-				<span>Exibição:</span>
-				<button onclick={() => (exhibition = 'list')} class="cursor-pointer"><List /></button>
-				<button onclick={() => (exhibition = 'grid')} class="cursor-pointer"><Square /></button>
-			</div>
-			<div class="flex w-full flex-col gap-2">
+			<div class="flex w-full flex-col items-center gap-2">
 				{#each trilhas as trilha, i}
-					<div class="group/button">
+					<div class="group/button w-full">
 						<button
 							class="group/button relative w-full cursor-pointer py-4 transition-all {trilhaList[i]
 								? 'inset-button'
@@ -76,7 +131,7 @@
 							onclick={() => (trilhaList[i] = !trilhaList[i])}
 						>
 							<span
-								class="cool-title-negative font-['Grifter'] text-xl uppercase transition-all group-hover/button:drop-shadow-[0_0_3px_white]/50"
+								class="cool-title font-['Grifter'] text-xl uppercase transition-all group-hover/button:drop-shadow-[0_0_3px_white]/50"
 								>{trilha.titulo}</span
 							>
 							<div
@@ -91,28 +146,56 @@
 						</button>
 					</div>
 					{#if trilhaList[i]}
-						<div transition:slide class="flex w-full flex-col gap-2">
+						<div transition:slide class="mb-5 flex w-full flex-col">
 							{#each trilha.videos as video, i}
-								<div class=" flex justify-between gap-2 rounded border border-white/10 p-2">
+								<div
+									class="border-bottom flex items-center justify-between gap-2 border-b border-white/20 p-2 last:border-b-0"
+								>
 									<span class="cool-title w-[1.5ch] text-center font-['Grifter'] text-xl"
 										>{i + 1}</span
 									>
-									<span class="w-full text-left">{video.titulo}</span>
-									<div class="flex w-[12ch] gap-0.5">
-										<button class="rounded bg-slate-700 px-2 {i === 0 ? 'opacity-50' : ''}"
-											>/\</button
+									<div class="flex gap-1">
+										<button
+											onclick={() => {
+												// swap item with previous
+												trilha.videos[i] = trilha.videos[i - 1];
+												trilha.videos[i - 1] = video;
+											}}
+											class="button-base p-1 {i === 0 ? 'opacity-50' : ''}"
+											><Chevron class="rotate-180 text-xl" /></button
 										>
-										<button class="rounded bg-slate-700 px-2">\/</button>
-										<button class="rounded bg-slate-700 px-1 hover:text-red-500"><Trash /></button>
+										<button
+											class="button-base p-1"
+											onclick={() => {
+												// swap item with next
+												trilha.videos[i] = trilha.videos[i + 1];
+												trilha.videos[i + 1] = video;
+											}}><Chevron class="text-xl" /></button
+										>
+									</div>
+									<span class="w-full text-left">{video.titulo}</span>
+									<div class="flex w-[12ch] gap-1">
+										<button class="button-base p-1.5"><Gear /></button>
+										<button
+											class="button-base bg-rose-500 p-1.5 text-white hover:bg-white hover:text-red-400"
+											onclick={() => {
+												deleteModal = true;
+											}}><Trash /></button
+										>
 									</div>
 								</div>
 							{/each}
-							<div class="flex justify-end">
-								<button class="button-base w-fit text-right">Salvar</button>
-							</div>
+							{#if unsavedChanges}
+								<div class="flex justify-end">
+									<button class="button-base w-fit text-right">Salvar</button>
+								</div>
+							{/if}
 						</div>
 					{/if}
 				{/each}
+				<button onclick={() => (addTrilha = true)} class="button-base w-fit"
+					>Adicionar Trilha +</button
+				>
 			</div>
 		</div>
 	{/if}
@@ -132,7 +215,7 @@
 	>
 		<div
 			onclick={(e) => e.stopPropagation()}
-			class="flex flex-col gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
+			class="flex flex-col gap-6 rounded-2xl bg-white/10 p-5 backdrop-blur"
 		>
 			<div class="flex flex-col gap-2">
 				<div>
@@ -158,6 +241,7 @@
 				<select
 					name="sector"
 					id="sector"
+					placeholder="Setor"
 					class="rounded-lg bg-white/10 placeholder:text-white/50"
 					bind:value={sectorIdx}
 					onchange={() => {
@@ -194,16 +278,6 @@
 						{/each}
 					</div>
 				{/if}
-				<div>
-					<input
-						type="text"
-						class="rounded-lg bg-white/10 placeholder:text-white/50"
-						name="autor"
-						id="autor"
-						placeholder="Autor do Vídeo"
-						bind:value={addVideoAuthor}
-					/>
-				</div>
 			</div>
 			<div class="flex flex-col gap-2">
 				<button
@@ -231,7 +305,39 @@
 						newTrilhaSectors = [];
 						addTrilha = false;
 					}}
-					class="button-base border border-white bg-transparent text-white hover:bg-white hover:text-black"
+					class="button-base bg-transparent text-white hover:bg-white hover:text-black"
+					>Cancelar</button
+				>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if deleteModal}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
+		onclick={() => (deleteModal = false)}
+	>
+		<div
+			onclick={(e) => e.stopPropagation()}
+			class="flex flex-col items-center gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
+		>
+			<h2>Tem certeza?</h2>
+			<p>Deseja excluir este vídeo da trilha?</p>
+			<div class="flex gap-2">
+				<button
+					onclick={() => {
+						deleteModal = false;
+					}}
+					class="button-base">Sim <Save /></button
+				>
+				<button
+					onclick={() => {
+						deleteModal = false;
+					}}
+					class="button-base bg-transparent text-white hover:bg-white hover:text-black"
 					>Cancelar</button
 				>
 			</div>

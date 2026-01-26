@@ -8,6 +8,16 @@
 	let showTreinamentos = $state(false);
 	let exhibition = $state('list');
 
+	// page interactivity v
+
+	let confirmDelete = $state(false);
+	let deleteLink = $state('');
+
+	let editModal = $state(false);
+	let editTitle = $state('');
+	let editAuthor = $state('');
+
+	// page interactivity end ^
 	let treinamentos: any = $state([]);
 	let treinamentosOrdered: any = $state('');
 	let treinamentosOrder = $state('');
@@ -255,7 +265,13 @@
 								<td class="overflow-hidden pr-2 overflow-ellipsis">{treinamento.autor}</td>
 								<td>
 									<button class="translate-y-1 cursor-pointer"><Gear /></button>
-									<button class="translate-y-1 cursor-pointer hover:text-red-600"><Trash /></button>
+									<button
+										class="translate-y-1 cursor-pointer hover:text-red-600"
+										onclick={() => {
+											deleteLink = treinamento.link;
+											confirmDelete = true;
+										}}><Trash /></button
+									>
 								</td>
 							</tr>
 						{/each}
@@ -279,10 +295,19 @@
 								href={`https://youtube.com/watch?v=${treinamento.link}`}>{treinamento.titulo}</a
 							>
 							<span class="text-sm opacity-70">{treinamento.autor}</span>
-							<div class="absolute hidden w-full justify-end p-3 group-hover:flex">
+							<div
+								class="absolute hidden w-full items-center justify-end gap-2 p-3 group-hover:flex"
+							>
 								<button
 									class="cursor-pointer transition-transform hover:scale-125 hover:rotate-30"
 									onclick={() => removeVideo(treinamento.link)}><Gear /></button
+								>
+								<button
+									class="cursor-pointer hover:text-red-600"
+									onclick={() => {
+										deleteLink = treinamento.link;
+										confirmDelete = true;
+									}}><Trash /></button
 								>
 							</div>
 						</div>
@@ -359,6 +384,95 @@
 						addVideoLink = '';
 						addVideoTitle = '';
 						addVideo = false;
+					}}
+					class="button-base border border-white bg-transparent text-white hover:bg-white hover:text-black"
+					>Cancelar</button
+				>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if confirmDelete}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
+		onclick={() => (confirmDelete = false)}
+	>
+		<div
+			onclick={(e) => e.stopPropagation()}
+			class="flex flex-col gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
+		>
+			<h2>Tem certeza?</h2>
+			<div class="flex w-full flex-col items-center justify-center gap-4">
+				<div>
+					<button
+						class="button-base"
+						onclick={() => {
+							removeVideo(deleteLink);
+							confirmDelete = false;
+						}}>Deletar</button
+					>
+				</div>
+				<div>
+					<button
+						class="cursor-pointer"
+						onclick={() => {
+							confirmDelete = false;
+						}}>Cancelar</button
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if editModal}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="fixed top-0 left-0 z-50 flex h-screen w-full flex-col items-center justify-center gap-2 bg-black/50"
+		onclick={() => (editModal = false)}
+	>
+		<div
+			onclick={(e) => e.stopPropagation()}
+			class="flex flex-col gap-6 rounded-xl bg-white/10 p-5 backdrop-blur"
+		>
+			<h2>Editar Video</h2>
+			<div class="flex w-full flex-col gap-2">
+				<div>
+					<input
+						type="text"
+						name="titulo"
+						id="titulo"
+						class="w-full rounded-lg bg-white/10 placeholder:text-white/50"
+						placeholder="Título do Vídeo"
+						bind:value={editTitle}
+					/>
+				</div>
+				<div>
+					<input
+						type="text"
+						class="w-full rounded-lg bg-white/10 placeholder:text-white/50"
+						name="autor"
+						id="autor"
+						placeholder="Autor(es) do Vídeo"
+						bind:value={editAuthor}
+					/>
+				</div>
+			</div>
+			<div class="flex flex-col gap-2">
+				<button
+					onclick={() => {
+						console.log('edit requested');
+						editModal = false;
+					}}
+					class="button-base">Salvar</button
+				>
+				<button
+					onclick={() => {
+						editModal = false;
 					}}
 					class="button-base border border-white bg-transparent text-white hover:bg-white hover:text-black"
 					>Cancelar</button
