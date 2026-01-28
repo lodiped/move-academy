@@ -21,10 +21,8 @@
 	// TESTING PAGINATION
 	let currentPage = $state(1);
 	const pageSize = 4;
-	let totalPages = $state(1);
 
-	//let pagedBooks = $derived(booksReversed.slice(currentPage - 1) * pageSize, (currentPage * pageSize)))
-
+	let totalPages = Math.ceil(booksArray.value.length / pageSize);
 	function goToPage(n: number) {
 		if (n < 1 || n > totalPages) {
 			return;
@@ -34,15 +32,24 @@
 	}
 	function nextPage() {
 		goToPage(currentPage + 1);
+		displayPage();
 	}
 	function prevPage() {
 		goToPage(currentPage - 1);
+		displayPage();
 	}
+
+	function displayPage() {
+		booksShow = booksReversed.slice(
+			(currentPage - 1) * pageSize,
+			(currentPage - 1) * pageSize + pageSize
+		);
+	}
+
 	// TESTING PAGINATION
 
 	onMount(async () => {
-		await getBooks();
-		parseBooks();
+		await getBooks().then(() => parseBooks());
 	});
 
 	function parseBooks() {
@@ -56,7 +63,8 @@
 		const idx = currentCumbucaObject.value;
 		currentBook = booksArray.value[idx];
 		booksReversed = [...booksArray.value].reverse();
-		booksShow = booksReversed.slice(0, 4);
+		// booksShow = booksReversed.slice(0, 4);
+		displayPage();
 	}
 
 	function loadMore() {
@@ -165,20 +173,19 @@
 		{/each}
 	</div>
 
-	{#if booksShow.length < booksArray.value.length}
-		<button onclick={loadMore} class="flex w-full justify-center pt-5 pb-2 text-2xl">
-			<Chevron class="cursor-pointer" />
+	<div class="my-4 flex w-full items-center justify-center gap-4">
+		<button disabled={currentPage === 1} onclick={prevPage} class="group cursor-pointer text-2xl">
+			<Chevron class="rotate-90 transition-transform group-hover:scale-150" />
 		</button>
-	{:else}
+		<p>{currentPage}</p>
 		<button
-			onclick={() => {
-				booksShow = booksReversed.slice(0, 4);
-			}}
-			class="flex w-full cursor-pointer justify-center pt-5 pb-2 text-2xl"
+			disabled={currentPage === totalPages}
+			onclick={nextPage}
+			class="group cursor-pointer text-2xl"
 		>
-			Fechar
+			<Chevron class="-rotate-90 transition-transform group-hover:scale-150" />
 		</button>
-	{/if}
+	</div>
 </div>
 
 {#if booksInfo}

@@ -8,6 +8,16 @@
 
 	//TODO: Funcao para passar o brilho de uma vez pelo progress bar. Ela precisa criar o elemento e depois deletar
 
+	// TODO checar e renderizar os cursos matriculados
+	let _matriculados: any = $state([]);
+	function _isMatriculado() {
+		if (_matriculados.length > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	let trilhaTest = $state(false);
 	function addShine(i: any) {
 		console.log('addShine');
@@ -102,14 +112,10 @@
 						<span class="min-w-[4ch] text-start font-['Grifter'] text-sm">65%</span>
 					</div>
 				</div>
-				<div class="text-accent-700 flex items-center justify-between gap-2">
-					<div class="relative w-full items-center gap-2">
+				<div class="flex items-center justify-between gap-2 opacity-50">
+					<div class="flex w-full items-center gap-2">
+						<Lock />
 						<span>Título do video 4</span>
-						<div
-							class="absolute top-0 left-0 flex h-full w-full items-center justify-center opacity-50"
-						>
-							<Lock />
-						</div>
 					</div>
 					<span class="font-['Grifter'] text-sm">1:05:04</span>
 					<div class="flex w-full max-w-1/3 items-center gap-2">

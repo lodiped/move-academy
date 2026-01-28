@@ -19,7 +19,6 @@
 
 	let trilhas: any = $state([]);
 	let trilhaList = $state([false, false, false]);
-	let exhibition = $state('list');
 	let showTrilhas = $state(false);
 	let addTrilha = $state(false);
 	let addTrilhaTitle = $state('');
@@ -31,6 +30,7 @@
 	let sectors: string[] = $state(['', 'bpo', 'contabil', 'geral']);
 
 	let unsavedChanges = $state(false);
+
 	function handleBeforeUnload(e: BeforeUnloadEvent) {
 		if (unsavedChanges) {
 			e.preventDefault();
@@ -76,12 +76,12 @@
 		window.addEventListener('beforeunload', handleBeforeUnload);
 
 		const layout = localStorage.getItem('exhibition');
-		exhibition = layout ? layout : 'grid';
 		if (isAdmin && !treinamentos.length) {
 			get(child(ref(database), 'trilhas'))
 				.then((snapshot) => {
 					if (snapshot.exists()) {
 						trilhas = snapshot.val();
+						altTrilhas = JSON.parse(JSON.stringify(trilhas));
 						console.log('TRILHAAAS', trilhas);
 					} else {
 						console.log('No data available');
@@ -93,19 +93,27 @@
 			return;
 		}
 	});
+
 	onDestroy(() => {
 		window.removeEventListener('beforeunload', handleBeforeUnload);
 	});
 
-	let altTrilhas = $state();
+	function checkaltTrilhas() {
+		console.log(altTrilhas);
+		console.log(trilhas);
+		console.log(trilhas === altTrilhas);
+	}
+
+	let altTrilhas: any = [];
+
+	function deepEqual(a: any, b: any) {
+		return JSON.stringify(a) === JSON.stringify(b);
+	}
+
 	$effect(() => {
 		// Checar constantemente se houve alterações ao editar as trilhas.
 		// ou seja, salvar o estado original ao carregar, e esperar as alterações em outras vars.
-		// if (trilhas !== altTrilhas) {
-		// 	unsavedChanges = true;
-		// } else {
-		// 	unsavedChanges = false;
-		// }
+		unsavedChanges = !deepEqual(trilhas, altTrilhas);
 	});
 	// TODO Colocar ações nos HTML buttons em um faux var (altTrilhas) para o effect ler e comparar
 </script>
@@ -122,6 +130,7 @@
 	{#if showTrilhas}
 		<div class="flex w-full flex-col items-center gap-2 p-4" transition:slide>
 			<div class="flex w-full flex-col items-center gap-2">
+				<button onclick={checkaltTrilhas}>Console Log</button>
 				{#each trilhas as trilha, i}
 					<div class="group/button w-full">
 						<button
@@ -186,7 +195,8 @@
 								</div>
 							{/each}
 							{#if unsavedChanges}
-								<div class="flex justify-end">
+								<div class="flex items-center justify-end gap-2">
+									<p class="text-red-500">Alterações não salvas!</p>
 									<button class="button-base w-fit text-right">Salvar</button>
 								</div>
 							{/if}

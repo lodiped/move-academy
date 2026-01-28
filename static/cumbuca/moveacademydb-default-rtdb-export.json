@@ -1,0 +1,636 @@
+{
+  "admin": {
+    "Q8i9Hrqy12gxurKWi3w7kt19Xa32": true,
+    "RtrXpzrCecVtn5Zn4kqKlFT0gmC3": true
+  },
+  "cumbuca": {
+    "currentCumbuca": 7,
+    "livros": [
+      {
+        "ano": 2005,
+        "autor": "T. Harv Eker",
+        "link": "713273",
+        "sinopse": "",
+        "titulo": "Os Segredos da Mente Milionária"
+      },
+      {
+        "ano": 1997,
+        "autor": "Robert Kiyosaki, Sharon L. Lechter",
+        "link": "41816007",
+        "sinopse": "",
+        "titulo": "Pai Rico, Pai Pobre"
+      },
+      {
+        "ano": 2014,
+        "autor": "Greg McKeown",
+        "link": "26864131",
+        "sinopse": "",
+        "titulo": "Essencialismo"
+      },
+      {
+        "ano": 2013,
+        "autor": "João Cordeiro",
+        "link": "26811083",
+        "sinopse": "",
+        "titulo": "Accountability"
+      },
+      {
+        "ano": 2012,
+        "autor": "Hal Elrod",
+        "link": "33234024",
+        "sinopse": "",
+        "titulo": "O Milagre da Manhã"
+      },
+      {
+        "ano": 2018,
+        "autor": "Nathalia Arcuri",
+        "link": "59543352",
+        "sinopse": "",
+        "titulo": "Me Poupe!"
+      },
+      {
+        "ano": 2011,
+        "autor": "Disney Institute",
+        "link": "17252897",
+        "sinopse": "",
+        "titulo": "O Jeito Disney de Encantar Clientes"
+      },
+      {
+        "ano": 2012,
+        "autor": "Charles Duhigg",
+        "link": "30556829",
+        "sinopse": "",
+        "titulo": "O Poder Do Hábito"
+      },
+      {
+        "ano": 2017,
+        "autor": "Caio Carneiro",
+        "link": "38192548",
+        "sinopse": "",
+        "titulo": "Seja Foda"
+      },
+      {
+        "ano": 1000,
+        "autor": "Napoleon Hill",
+        "link": 28187852,
+        "sinopse": "",
+        "titulo": "Mais Esperto que O Diabo"
+      },
+      {
+        "ano": 1000,
+        "autor": "Mc Donalds",
+        "link": 42180270,
+        "sinopse": "",
+        "titulo": "Fome de Poder"
+      }
+    ]
+  },
+  "emails": {
+    "andreussiegrist": "andreus@movenegocios.com.br",
+    "jessicanunes": "jessica@movenegocios.com.br",
+    "pedrolodi": "pedro@movenegocios.com.br",
+    "pedroloditeste": "pedroelodi@gmail.com",
+    "thiagorosa": "thiago@movenegocios.com.br"
+  },
+  "treinamentos": [
+    {
+      "autor": "Regiane Cordeiro",
+      "link": "ryjf0oWbkOQ",
+      "titulo": "Perfis Comportamentais"
+    },
+    {
+      "autor": "Lincoln Gomes",
+      "link": "PqlZ1RiqBBM",
+      "titulo": "Energia Emocional"
+    },
+    {
+      "autor": "André Castro",
+      "link": "75J56akkzq0",
+      "titulo": "Gestão Inteligente"
+    },
+    {
+      "autor": "Caio Surdi",
+      "link": "k2rQMF5IN24",
+      "titulo": "Direção de Arte"
+    },
+    {
+      "autor": "Valdinei Silva e André Castro",
+      "link": "gUEwcBA6GbM",
+      "titulo": "Controle de estoque e método de custeio por absorção"
+    },
+    {
+      "autor": "Michael Hening",
+      "link": "dIIlfnKrvNw",
+      "titulo": "Cultura Organizacional"
+    },
+    {
+      "autor": "Eugênio Mussak",
+      "link": "5lzFLUHiQi8",
+      "titulo": "Metacompetência"
+    },
+    {
+      "autor": "Milena Andrade",
+      "link": "c24emhtfuF4",
+      "titulo": "Programação Neurolinguística"
+    },
+    {
+      "autor": "Eliseu Cararo",
+      "link": "1-uFJVJ05s4",
+      "titulo": "Fazer o que Precisa ser Feito"
+    },
+    {
+      "autor": "Amaury Miqueleto",
+      "link": "nzVBlTUHRnw",
+      "titulo": "Gestão Emocional"
+    },
+    {
+      "autor": "Tarcísio Lemos",
+      "link": "OHeKEBiLwO4",
+      "titulo": "Auto Desempenho"
+    },
+    {
+      "autor": "Higor Santos",
+      "link": "yTcX59qHzbI",
+      "titulo": "Alta Performance e Resultado"
+    },
+    {
+      "autor": "Clesiane Rossa",
+      "link": "J3nE3QeUBrE",
+      "titulo": "Alimentação Saudável"
+    },
+    {
+      "autor": "João Pedro Faria",
+      "link": "uK5OaXG7eRg",
+      "titulo": "Inteligência Artificial"
+    },
+    {
+      "autor": "André Castro",
+      "link": "xBv870Xr1nw",
+      "titulo": "Redução de Custos"
+    },
+    {
+      "autor": "Ivo Cararo",
+      "link": "Co_Z964X1C0",
+      "titulo": "Propósito de Vida"
+    },
+    {
+      "autor": "Lineker Martins",
+      "link": "yAS3RwtWuZs",
+      "titulo": "Recovery de Alta Performance"
+    },
+    {
+      "autor": "Derick Nodari",
+      "link": "5vZhhWxrQzo",
+      "titulo": "Foco Afiado"
+    },
+    {
+      "autor": "Leonardo Silva",
+      "link": "_KTc9oAnMl0",
+      "titulo": "Emissão de Nota Fiscal"
+    }
+  ],
+  "treinamentosproper": {
+    "1-uFJVJ05s4": {
+      "autor": "Eliseu Cararo",
+      "data": 1708664400,
+      "titulo": "Fazer o que Precisa ser Feito"
+    },
+    "5lzFLUHiQi8": {
+      "autor": "Eugênio Mussak",
+      "data": 1706161800,
+      "titulo": "Metacompetência"
+    },
+    "5vZhhWxrQzo": {
+      "autor": "Derick Nodari",
+      "data": 1764133200,
+      "titulo": "Foco Afiado"
+    },
+    "75J56akkzq0": {
+      "autor": "André Castro",
+      "data": 1706074400,
+      "titulo": "Gestão Inteligente"
+    },
+    "Co_Z964X1C0": {
+      "autor": "Ivo Cararo",
+      "data": 1743656400,
+      "titulo": "Propósito de Vida"
+    },
+    "J3nE3QeUBrE": {
+      "autor": "Clesiane Rossa",
+      "data": 1743310800,
+      "titulo": "Alimentação Saudável"
+    },
+    "OHeKEBiLwO4": {
+      "autor": "Tarcísio Lemos",
+      "data": 1723611600,
+      "titulo": "Auto Desempenho"
+    },
+    "PqlZ1RiqBBM": {
+      "autor": "Lincoln Gomes",
+      "data": 1706073400,
+      "titulo": "Energia Emocional"
+    },
+    "_KTc9oAnMl0": {
+      "autor": "Leonardo Silva",
+      "data": 1764134200,
+      "titulo": "Emissão de Nota Fiscal"
+    },
+    "c24emhtfuF4": {
+      "autor": "Milena Andrade",
+      "data": 1706162800,
+      "titulo": "Programação Neurolinguística"
+    },
+    "dIIlfnKrvNw": {
+      "autor": "Michael Hening",
+      "data": 1706160800,
+      "titulo": "Cultura Organizacional"
+    },
+    "gUEwcBA6GbM": {
+      "autor": "Valdinei Silva e André Castro",
+      "data": 1706159800,
+      "titulo": "Direção de Arte"
+    },
+    "k2rQMF5IN24": {
+      "autor": "Caio Surdi",
+      "data": 1706158800,
+      "titulo": "Direção de Arte"
+    },
+    "nzVBlTUHRnw": {
+      "autor": "Amaury Miqueleto",
+      "data": 1708665400,
+      "titulo": "Gestão Emocional"
+    },
+    "ryjf0oWbkOQ": {
+      "autor": "Regiane Cordeiro",
+      "data": 1706072400,
+      "titulo": "Perfis Comportamentais"
+    },
+    "uK5OaXG7eRg": {
+      "autor": "João Pedro Faria",
+      "data": 1743397200,
+      "titulo": "Inteligência Artificial"
+    },
+    "xBv870Xr1nw": {
+      "autor": "André Castro",
+      "data": 1743570000,
+      "titulo": "Redução de Custos"
+    },
+    "yAS3RwtWuZs": {
+      "autor": "Lineker Martins",
+      "data": 1749531600,
+      "titulo": "Recovery de Alta Performance"
+    },
+    "yTcX59qHzbI": {
+      "autor": "Higor Santos",
+      "data": 1725512400,
+      "titulo": "Alta Performance e Resultado"
+    }
+  },
+  "treinamentostest": [
+    {
+      "ryjf0oWbkOQ": {
+        "autor": "Regiane Cordeiro",
+        "titulo": "Perfis Comportamentais"
+      }
+    },
+    {
+      "PqlZ1RiqBBM": {
+        "autor": "Lincoln Gomes",
+        "titulo": "Energia Emocional"
+      }
+    },
+    {
+      "75J56akkzq0": {
+        "autor": "André Castro",
+        "titulo": "Gestão Inteligente"
+      }
+    },
+    {
+      "k2rQMF5IN24": {
+        "autor": "Caio Surdi",
+        "titulo": "Direção de Arte"
+      }
+    },
+    {
+      "gUEwcBA6GbM": {
+        "autor": "Valdinei Silva e André Castro",
+        "titulo": "Direção de Arte"
+      }
+    },
+    {
+      "dIIlfnKrvNw": {
+        "autor": "Michael Hening",
+        "titulo": "Cultura Organizacional"
+      }
+    },
+    {
+      "5lzFLUHiQi8": {
+        "autor": "Eugênio Mussak",
+        "titulo": "Metacompetência"
+      }
+    },
+    {
+      "c24emhtfuF4": {
+        "autor": "Milena Andrade",
+        "titulo": "Programação Neurolinguística"
+      }
+    },
+    {
+      "1-uFJVJ05s4": {
+        "autor": "Eliseu Cararo",
+        "titulo": "Fazer o que Precisa ser Feito"
+      }
+    },
+    {
+      "nzVBlTUHRnw": {
+        "autor": "Amaury Miqueleto",
+        "titulo": "Gestão Emocional"
+      }
+    },
+    {
+      "OHeKEBiLwO4": {
+        "autor": "Tarcísio Lemos",
+        "titulo": "Auto Desempenho"
+      }
+    },
+    {
+      "yTcX59qHzbI": {
+        "autor": "Higor Santos",
+        "titulo": "Alta Performance e Resultado"
+      }
+    },
+    {
+      "J3nE3QeUBrE": {
+        "autor": "Clesiane Rossa",
+        "titulo": "Alimentação Saudável"
+      }
+    },
+    {
+      "uK5OaXG7eRg": {
+        "autor": "João Pedro Faria",
+        "titulo": "Inteligência Artificial"
+      }
+    },
+    {
+      "xBv870Xr1nw": {
+        "autor": "André Castro",
+        "titulo": "Redução de Custos"
+      }
+    },
+    {
+      "Co_Z964X1C0": {
+        "autor": "Ivo Cararo",
+        "titulo": "Propósito de Vida"
+      }
+    },
+    {
+      "yAS3RwtWuZs": {
+        "autor": "Lineker Martins",
+        "titulo": "Recovery de Alta Performance"
+      }
+    },
+    {
+      "5vZhhWxrQzo": {
+        "autor": "Derick Nodari",
+        "titulo": "Foco Afiado"
+      }
+    },
+    {
+      "_KTc9oAnMl0": {
+        "autor": "Leonardo Silva",
+        "titulo": "Emissão de Nota Fiscal"
+      }
+    }
+  ],
+  "trilhas": [
+    {
+      "titulo": "Onboarding",
+      "videos": [
+        {
+          "autor": "Move Negócios",
+          "link": "aoNtsJ8qYq0",
+          "titulo": "Move Negócios: Gestão Financeira Descomplicada"
+        },
+        {
+          "autor": "Andreus Siegrist",
+          "link": "GuZsjJfFieo",
+          "titulo": "Atendimento ao Cliente"
+        },
+        {
+          "autor": "Claudia Justina",
+          "link": "XEjW4CK-ZBU",
+          "titulo": "Marketing Pessoal"
+        },
+        {
+          "autor": "Leonardo Beling",
+          "link": "yM32GHJuHtg",
+          "titulo": "Oratória"
+        }
+      ]
+    },
+    {
+      "titulo": "Contabilidade",
+      "videos": [
+        {
+          "autor": "André Castro",
+          "link": "RFk0fP-FkOY",
+          "titulo": "Calculando o Simples Nacional"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "link": "PC71mHYwPUk",
+          "titulo": "Balanço, DRE e DFC"
+        },
+        {
+          "autor": "André Castro",
+          "link": "h2ztAWFU9js",
+          "titulo": "Regime e Tributação"
+        }
+      ]
+    },
+    {
+      "titulo": "BPO Financeiro",
+      "videos": [
+        {
+          "autor": "Jean Caetano",
+          "link": "ulgOtQ25Hfk",
+          "titulo": "O que é BPO"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "link": "PC71mHYwPUk",
+          "titulo": "Balanço, DRE e DFC"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "link": "qB6RamhcxzI",
+          "titulo": "Plano de Negócios"
+        },
+        {
+          "autor": "Jéssica Nunes",
+          "link": "oyqfxN0OCrY",
+          "titulo": "Treinamento Financeiro 01"
+        },
+        {
+          "autor": "Cássia Rodrigues e Fernando Granciano",
+          "link": "ohrY5Ob6UZU",
+          "titulo": "Treinamento de Rotina do Analista/Assistente"
+        },
+        {
+          "autor": "Jéssica Nunes e Caroline Barros",
+          "link": "729fKoNNz4I",
+          "titulo": "Plano de Contas"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "link": "TRv9NEZX99g",
+          "titulo": "Visão 360: Contábil BPO"
+        }
+      ]
+    }
+  ],
+  "trilhasproper": {
+    "bpofinanceiro": {
+      "desc": "",
+      "title": "BPO Financeiro",
+      "videos": [
+        {
+          "autor": "Jean Caetano",
+          "desc": "",
+          "id": "ulgOtQ25Hfk",
+          "release": 1706158800,
+          "title": "O que é BPO"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "desc": "",
+          "id": "PC71mHYwPUk",
+          "release": 1706159800,
+          "title": "Balanço, DRE e DFC"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "desc": "",
+          "id": "qB6RamhcxzI",
+          "release": 1706159900,
+          "title": "Plano de Negócios"
+        },
+        {
+          "autor": "Jéssica Nunes",
+          "desc": "",
+          "id": "oyqfxN0OCrY",
+          "release": 1716267600,
+          "title": "Treinamento Financeiro 01"
+        },
+        {
+          "autor": "Cássia Rodrigues e Fernando Granciano",
+          "desc": "",
+          "id": "ohrY5Ob6UZU",
+          "release": 1743397200,
+          "title": "Treinamento de Rotina do Analista/Assistente"
+        },
+        {
+          "autor": "Jéssica Nunes e Caroline Barros",
+          "desc": "",
+          "id": "729fKoNNz4I",
+          "release": 1749531600,
+          "title": "Plano de Contas"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "desc": "",
+          "id": "TRv9NEZX99g",
+          "release": 1764219600,
+          "title": "Visão 360: Contábil BPO"
+        }
+      ]
+    },
+    "contabilidade": {
+      "desc": "",
+      "title": "Contabilidade",
+      "videos": [
+        {
+          "autor": "André Castro",
+          "desc": "",
+          "id": "RFk0fP-FkOY",
+          "release": 1706158800,
+          "title": "Calculando o Simples Nacional"
+        },
+        {
+          "autor": "Valdinei Silva",
+          "desc": "",
+          "id": "PC71mHYwPUk",
+          "release": 1706159800,
+          "title": "Balanço, DRE e DFC"
+        },
+        {
+          "autor": "André Castro",
+          "desc": "",
+          "id": "h2ztAWFU9js",
+          "release": 1706159900,
+          "title": "Regime e Tributação"
+        }
+      ]
+    },
+    "onboarding": {
+      "desc": "",
+      "title": "Onboarding",
+      "videos": [
+        {
+          "autor": "Move Negócios",
+          "desc": "",
+          "id": "aoNtsJ8qYq0",
+          "release": 1722834000,
+          "title": "Move Negócios: Gestão Financeira Descomplicada"
+        },
+        {
+          "autor": "Andreus Siegrist",
+          "desc": "",
+          "id": "GuZsjJfFieo",
+          "release": 1702962000,
+          "title": "Atendimento ao Cliente"
+        },
+        {
+          "autor": "Claudia Justina",
+          "desc": "",
+          "id": "XEjW4CK-ZBU",
+          "release": 1700802000,
+          "title": "Marketing Pessoal"
+        },
+        {
+          "autor": "Leonardo Beling",
+          "desc": "",
+          "id": "yM32GHJuHtg",
+          "release": 1701752400,
+          "title": "Oratória"
+        }
+      ]
+    },
+    "test id": 0
+  },
+  "users": {
+    "andreussiegriest": {
+      "setor": [
+        "contabil"
+      ]
+    },
+    "pedrolodi": {
+      "matriculado": {
+        "treinamentos": {
+          "ytid": 50
+        },
+        "trilhas": {
+          "trilhaid": {
+            "ytid": 50
+          }
+        }
+      },
+      "setor": [
+        "contábil",
+        "financeiro",
+        "head"
+      ]
+    }
+  },
+  "version": 5
+}
